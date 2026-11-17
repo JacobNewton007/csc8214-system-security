@@ -44,10 +44,9 @@ A real-world application is Apple's proposed system to combat Child Sexual Abuse
 images held by child-protection organisations.
 The design is described by Bhowmick et al., *The Apple PSI System* (2021), covered in Lecture 4.
 
-Plain data sharing fails in both directions. Uploading every user photo for checking would
-concentrate the private photo library of every customer on one company's servers: a permanent
-target for breach, insider abuse and legal compulsion, and an intrusion far wider than the
-question being asked. Publishing the database to devices fails too: its entries
+Plain data sharing fails both ways. Uploading every user photo would concentrate the private
+photo library of every customer on one company's servers: a permanent target for breach, insider
+abuse and legal compulsion, and an intrusion far wider than the question asked. Publishing the database to devices fails too: its entries
 identify known illegal material, so anyone holding them could test candidate images and alter
 whichever matched until they evaded detection.
 
@@ -59,8 +58,10 @@ nothing about the images that did not match. A threshold was applied so that no 
 revealed until a set number of matches had accumulated, limiting the damage from a single false
 positive.
 
-The example also shows PSI's limit. The protocol can guarantee that only the intersection is
-revealed; it cannot decide whether computing that intersection is legitimate. Apple later dropped
+Both primary sources are Apple's own [10, 11], so their security claims warrant caution;
+the criticism that ended the scheme came from outside it. The example also shows PSI's limit:
+the protocol guarantees that only the intersection is revealed, but cannot decide whether
+computing that intersection is legitimate. Apple later dropped
 the plan, in 2022, after sustained criticism that the same machinery, once deployed, could be
 repointed at any other database. Cryptography constrained what was learned, not what could
 later be asked.
@@ -305,9 +306,13 @@ a system that can apply judgement, whereas a smart contract *is* the enforcement
 judgement at all. A traditional contract with a typo in a payment clause will usually be
 rectified; a smart contract with the same typo pays the wrong amount every time.
 
-A second difference is scope. A smart contract acts only on facts it can see on-chain, so
-anything about the physical world must come from a trusted oracle, which reintroduces the
-trusted third party the design set out to remove.
+A second difference is scope. A smart contract acts only on on-chain facts, so anything physical
+must come from a trusted oracle, reintroducing the third party the design set out to remove.
+
+Which form is stronger therefore depends on the obligation rather than on the technology. Where
+the terms reduce to on-chain facts and the parties value automatic enforcement over later
+flexibility, the smart contract is the better instrument; where they turn on judgement or may
+need amending, that same immutability becomes a liability rather than a guarantee.
 
 ## B.3 Security considerations
 
@@ -417,13 +422,15 @@ of it: a transaction costs Gas Limit × Gas Price, independently of how much Eth
 fee therefore falls hardest on small donors, and at busy times can approach the donation itself,
 so a contract meant to collect many small amounts works against its own economics.
 
-*Improvement:* accept contributions in batches, so one transaction records many donations and
-the fixed cost is shared, and pack the stored fields into smaller `uint` types so fewer storage
-slots are written per contribution.
+*Improvement:* batch contributions, so one transaction records many donations and the fixed cost
+is shared, and pack the stored fields into smaller `uint` types so fewer slots are written.
 
 *Trade-off:* batching delays confirmation, and the aggregator must be trusted not to drop
 donations, reintroducing the intermediary the design was meant to avoid. Tighter packing makes
 the code harder to audit.
+
+Which limitation bites harder depends on the campaign: many small donations make the fee
+overhead dominant, whereas a few large backers make the missing refund the greater risk.
 
 ---
 
@@ -535,19 +542,21 @@ Only those protected totals leave the site. Under secure aggregation the coordin
 it; each hospital fills its own gaps locally with `μ`. The imputed value is the same
 as with pooling, and the coordinator never sees a record.
 
-**Worked example.** Hospital A observes 80, 100 and 120, so `s_A = 300`, `n_A = 3`. Hospital B
-observes 90 and 110, so `s_B = 200`, `n_B = 2`. Then `S = 500`, `N = 5`, `μ = 100`.
+**Worked example.** A observes 80, 100 and 120, so `s_A = 300`, `n_A = 3`; B observes 90 and
+110, so `s_B = 200`, `n_B = 2`. Then `S = 500`, `N = 5`, `μ = 100`.
 
 **How this differs from a central server.** In the plaintext approach the server receives every
-record, becomes a new data controller and a single point of failure, and sees the patients
-irrelevant to the imputation. Here it sees two totals, and records never leave the hospital.
+record, becomes a new data controller and a single point of failure, and sees patients irrelevant
+to the imputation. Here it sees two totals, and records never leave the hospital.
 
 **Limitations.** The aggregate itself is still revealed, and secure aggregation supports only
 counts, sums and means. Medians and regression
 imputation need heavier MPC. More sharply, with two hospitals
 the aggregate leaks: knowing `μ` and `N`, Hospital A computes `S − s_A = s_B` and
 `N − n_A = n_B`, learning B's sum, count and local mean exactly. Secure aggregation protects
-against the coordinator here, not against the only other participant.
+against the coordinator here, not against the only other participant. Whether that matters
+depends on the field: for a routine laboratory value it may be tolerable, but where the variable
+is disclosive, two sites should not impute this way without MPC.
 
 ---
 
