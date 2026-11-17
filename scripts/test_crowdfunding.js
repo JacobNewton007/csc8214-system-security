@@ -168,15 +168,19 @@ async function testDoubleWithdraw(campaign, { beneficiary, bob }) {
     "AlreadyWithdrawn"
   );
 
-  await (await campaign.connect(bob).contribute({ value: eth(2) })).wait();
   await expectRevert(
-    "late contributions cannot be withdrawn either (latch is permanent)",
-    campaign.connect(beneficiary).withdraw(),
-    "AlreadyWithdrawn"
+    "a contribution after the withdrawal is refused, not stranded",
+    campaign.connect(bob).contribute({ value: eth(2) }),
+    "CampaignClosed"
+  );
+  await expectRevert(
+    "a plain transfer after the withdrawal is refused too",
+    bob.sendTransaction({ to: await campaign.getAddress(), value: eth(2) }),
+    "CampaignClosed"
   );
   check(
-    "the 2 ETH that arrived late is now stuck in the contract (see B.5)",
-    (await ethers.provider.getBalance(await campaign.getAddress())) === eth(2)
+    "contract still holds nothing after the refused contributions",
+    (await ethers.provider.getBalance(await campaign.getAddress())) === 0n
   );
 }
 

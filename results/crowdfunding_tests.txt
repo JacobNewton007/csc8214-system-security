@@ -45,15 +45,16 @@ B.4  CROWDFUNDING CONTRACT - FUNCTIONAL TESTS
 -- Withdrawal AFTER the target is reached --
   PASS  a stranger still cannot withdraw  [NotBeneficiary]
   contract held             : 13.0 ETH
-  beneficiary gained        : 13.0 ETH (net of 0.000063695828806616 ETH gas)
+  beneficiary gained        : 13.0 ETH (net of 0.000063697623929552 ETH gas)
   PASS  beneficiary received the full balance
   PASS  contract balance is now zero
   PASS  withdrawn flag is set
 
 -- Withdrawal AFTER the funds have already been withdrawn (REQUIREMENT 4) --
   PASS  the beneficiary cannot withdraw a second time  [AlreadyWithdrawn]
-  PASS  late contributions cannot be withdrawn either (latch is permanent)  [AlreadyWithdrawn]
-  PASS  the 2 ETH that arrived late is now stuck in the contract (see B.5)
+  PASS  a contribution after the withdrawal is refused, not stranded  [CampaignClosed]
+  PASS  a plain transfer after the withdrawal is refused too  [CampaignClosed]
+  PASS  contract still holds nothing after the refused contributions
 
 -- Reentrancy: a hostile beneficiary calls withdraw() from receive() --
   campaign2 raised          : 5.0 ETH
@@ -63,5 +64,5 @@ B.4  CROWDFUNDING CONTRACT - FUNCTIONAL TESTS
   PASS  attacker holds only the single legitimate payout  [5.0 ETH]
 
 ==========================================================================
-RESULT: 32 passed, 0 failed
+RESULT: 33 passed, 0 failed
 ==========================================================================

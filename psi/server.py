@@ -45,14 +45,14 @@ class Store:
             return list(self._log)
 
     def record_public_key(self, session_id: str, client_id: str, public_key: int) -> None:
-        """PROTOCOL STEP 1 - store a client's Diffie-Hellman public value."""
+        """PROTOCOL STEP 0 - store a client's Diffie-Hellman public value."""
         with self._lock:
             self._session(session_id).public_keys[client_id] = public_key
             self._append(session_id, "received", client_id, "DH_PUBLIC_KEY",
                          {"public_key_truncated": f"{str(public_key)[:32]}..."})
 
     def peer_public_key(self, session_id: str, client_id: str) -> tuple[str, int] | None:
-        """PROTOCOL STEP 1 - hand a client the other client's public value."""
+        """PROTOCOL STEP 0 - hand a client the other client's public value."""
         with self._lock:
             keys = self._session(session_id).public_keys
             peer = next(((c, k) for c, k in keys.items() if c != client_id), None)
@@ -64,7 +64,7 @@ class Store:
 
     def record_digests(self, session_id: str, client_id: str, mode: str,
                        digests: list[str]) -> bool:
-        """PROTOCOL STEP 3 - store one client's blinded set. Returns True if both are in.
+        """PROTOCOL STEP 2 - store one client's blinded set. Returns True if both are in.
 
         This log entry is the Server's entire view of the client: no raw set
         element appears in it.
@@ -79,7 +79,7 @@ class Store:
             return len(session.digests) == CLIENTS_PER_SESSION
 
     def intersection(self, session_id: str) -> list[str] | None:
-        """PROTOCOL STEP 4 - intersect the two digest lists, once both have arrived."""
+        """PROTOCOL STEP 3 - intersect the two digest lists, once both have arrived."""
         with self._lock:
             session = self._session(session_id)
             if len(session.digests) < CLIENTS_PER_SESSION:

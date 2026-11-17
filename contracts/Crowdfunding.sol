@@ -23,6 +23,7 @@ contract Crowdfunding {
     event FundsWithdrawn(address indexed beneficiary, uint256 amount);
 
     error ZeroContribution();
+    error CampaignClosed();
     error NotBeneficiary(address caller);
     error TargetNotReached(uint256 raised, uint256 required);
     error AlreadyWithdrawn();
@@ -41,10 +42,12 @@ contract Crowdfunding {
     }
 
     /// @notice Contribute to the campaign.
-    /// @dev Accepted after the target is reached too, so that a late
-    ///      contributor does not lose gas to a revert.
+    /// @dev Over-funding is accepted, but contributions are refused once the
+    ///      funds have been withdrawn: the latch is permanent, so ether sent
+    ///      after that point could never be released and would be stranded.
     function contribute() public payable {
         if (msg.value == 0) revert ZeroContribution();
+        if (withdrawn) revert CampaignClosed();
 
         bool wasBelowTarget = totalRaised < target;
         contributions[msg.sender] += msg.value;

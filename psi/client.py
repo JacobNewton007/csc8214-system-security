@@ -2,13 +2,13 @@
 
     python3 psi/client.py --client-id client1 --set 1,2,5,9,260452597
 
-Protocol steps, as described in Question A.3 of the report:
+Protocol steps, numbered as in Question A.3 of the report:
 
-    STEP 1  agree a MAC key with the other client (hmac mode only)
-    STEP 2  blind the local set, keeping a private {digest: element} table
-    STEP 3  send the shuffled digests to the Server
-    STEP 4  the Server intersects the two digest lists
-    STEP 5  invert the returned digests through the local table
+    STEP 0  agree a MAC key with the other client (keyed variant only)
+    STEP 1  blind the local set, keeping a private {digest: element} table
+    STEP 2  send the shuffled digests to the Server
+    STEP 3  the Server intersects the two digest lists
+    STEP 4  invert the returned digests through the local table
 """
 
 from __future__ import annotations
@@ -71,7 +71,9 @@ def run_client(client_id: str, elements: list[Element], mode: str, session: str,
 
     say(f"private set = {sorted(map(str, elements))}  (never leaves this process)")
 
-    # PROTOCOL STEP 1: Diffie-Hellman with the other client, relayed by the Server.
+    # PROTOCOL STEP 0: Diffie-Hellman with the other client, relayed by the Server.
+    # Used only by the improved (keyed) variant of A.5; the protocol of A.3
+    # starts at Step 1.
     key: bytes | None = None
     if mode == "hmac":
         private, public = dh_keypair()
@@ -83,22 +85,22 @@ def run_client(client_id: str, elements: list[Element], mode: str, session: str,
         say(f"derived shared MAC key with {peer['peer']} "
             f"(first 8 bytes: {key[:8].hex()}) - the Server cannot derive this")
 
-    # PROTOCOL STEP 2: blind locally. The table is what inverts the Server's answer.
+    # PROTOCOL STEP 1: blind locally. The table is what inverts the Server's answer.
     table = blind_set(elements, key)
     say(f"blinded {len(table)} elements with "
         f"{'HMAC-SHA256 (keyed)' if key else 'SHA-256 (unkeyed)'}")
     for element_digest, element in table.items():
         say(f"    {element!s:>12}  ->  {element_digest}")
 
-    # PROTOCOL STEP 3: send shuffled, so position cannot leak the ordering of the set.
+    # PROTOCOL STEP 2: send shuffled, so position cannot leak the ordering of the set.
     outgoing = list(table)
     random.shuffle(outgoing)
     _post(f"{server}/session/{session}/digests",
           {"client_id": client_id, "mode": mode, "digests": outgoing})
     say(f"sent {len(outgoing)} shuffled digests to the Server (no raw elements sent)")
 
-    # PROTOCOL STEP 4 happens on the Server.
-    # PROTOCOL STEP 5: only this client holds the table, so only it can invert the result.
+    # PROTOCOL STEP 3 happens on the Server.
+    # PROTOCOL STEP 4: only this client holds the table, so only it can invert the result.
     returned = _poll(f"{server}/session/{session}/result", "intersection")["intersection"]
     say(f"Server returned {len(returned)} intersecting digest(s)")
     intersection = sorted((table[d] for d in returned if d in table),

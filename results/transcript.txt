@@ -1,4 +1,5 @@
-[runner] a Server is already listening on http://127.0.0.1:8214
+[runner] starting the Server on port 8214 ...
+[runner] Server is up on http://127.0.0.1:8214
 
 ==========================================================================
 RUN 1 (A.4 i) - the sets given in the question, plain SHA-256
@@ -18,8 +19,8 @@ RUN 1 (A.4 i) - the sets given in the question, plain SHA-256
 [client1]                5  ->  443d7581c97e9580bbf394b5fdc2a4a61405bceb987c6b1e4f4b6e2ee56c6f9e
 [client2]               11  ->  d78bd3d40637d1b405728f69a29ca85976e5e7824f1033e8c46967fe01d4767f
 [client1]                9  ->  99e2d08e26e0cf553853271a4d51fa24a533cc7cc262cdbdce98dd64901dddab
-[client2]        260452597  ->  7171a8e2f17b8501a55f4f943f528666e8137ba9515d910b4dc559d38af1135e
 [client1]        260452597  ->  7171a8e2f17b8501a55f4f943f528666e8137ba9515d910b4dc559d38af1135e
+[client2]        260452597  ->  7171a8e2f17b8501a55f4f943f528666e8137ba9515d910b4dc559d38af1135e
 [client2] sent 4 shuffled digests to the Server (no raw elements sent)
 [client1] sent 5 shuffled digests to the Server (no raw elements sent)
 [client2] Server returned 2 intersecting digest(s)
@@ -28,20 +29,20 @@ RUN 1 (A.4 i) - the sets given in the question, plain SHA-256
 [client1] INTERSECTION = [5, 260452597]
 
 --- MESSAGES AT THE SERVER for session 'run1' (this is the Server's ENTIRE view) ---
-  [ 1] 13:23:11.106  Server <-- client2      BLINDED_SET
+  [ 1] 16:03:14.300  Server <-- client2      BLINDED_SET
         mode=plain  count=4
           7171a8e2f17b8501a55f4f943f528666e8137ba9515d910b4dc559d38af1135e
-          443d7581c97e9580bbf394b5fdc2a4a61405bceb987c6b1e4f4b6e2ee56c6f9e
           d78bd3d40637d1b405728f69a29ca85976e5e7824f1033e8c46967fe01d4767f
+          443d7581c97e9580bbf394b5fdc2a4a61405bceb987c6b1e4f4b6e2ee56c6f9e
           ce21b7c354366862da6409a2087b7694374c3587843cfa0bd74e156213b05d41
-  [ 2] 13:23:11.107  Server <-- client1      BLINDED_SET
+  [ 2] 16:03:14.301  Server <-- client1      BLINDED_SET
         mode=plain  count=5
           443d7581c97e9580bbf394b5fdc2a4a61405bceb987c6b1e4f4b6e2ee56c6f9e
-          96dcfae20d4e26466b1f7dace43d95372c97aeea149dfa30d7c16f0d2261b9ee
-          7171a8e2f17b8501a55f4f943f528666e8137ba9515d910b4dc559d38af1135e
           99e2d08e26e0cf553853271a4d51fa24a533cc7cc262cdbdce98dd64901dddab
+          96dcfae20d4e26466b1f7dace43d95372c97aeea149dfa30d7c16f0d2261b9ee
           ecf2de5604e9c6182e7216c895ec99794da0a8100ee978ef94492316155c67b0
-  [ 3] 13:23:11.108  Server --> both clients INTERSECTION
+          7171a8e2f17b8501a55f4f943f528666e8137ba9515d910b4dc559d38af1135e
+  [ 3] 16:03:14.303  Server --> both clients INTERSECTION
         count=2
           443d7581c97e9580bbf394b5fdc2a4a61405bceb987c6b1e4f4b6e2ee56c6f9e
           7171a8e2f17b8501a55f4f943f528666e8137ba9515d910b4dc559d38af1135e
@@ -55,17 +56,17 @@ RUN 2 (A.4 ii) - Client 2's set modified, plain SHA-256
   Expected intersection: {2, 260452597}
 
 [client1] private set = ['1', '2', '260452597', '5', '9']  (never leaves this process)
-[client1] blinded 5 elements with SHA-256 (unkeyed)
 [client2] private set = ['11', '2', '260452597', '8']  (never leaves this process)
+[client1] blinded 5 elements with SHA-256 (unkeyed)
 [client1]                1  ->  96dcfae20d4e26466b1f7dace43d95372c97aeea149dfa30d7c16f0d2261b9ee
-[client2] blinded 4 elements with SHA-256 (unkeyed)
 [client1]                2  ->  ecf2de5604e9c6182e7216c895ec99794da0a8100ee978ef94492316155c67b0
-[client2]                2  ->  ecf2de5604e9c6182e7216c895ec99794da0a8100ee978ef94492316155c67b0
 [client1]                5  ->  443d7581c97e9580bbf394b5fdc2a4a61405bceb987c6b1e4f4b6e2ee56c6f9e
-[client2]                8  ->  ce21b7c354366862da6409a2087b7694374c3587843cfa0bd74e156213b05d41
+[client2] blinded 4 elements with SHA-256 (unkeyed)
 [client1]                9  ->  99e2d08e26e0cf553853271a4d51fa24a533cc7cc262cdbdce98dd64901dddab
-[client2]               11  ->  d78bd3d40637d1b405728f69a29ca85976e5e7824f1033e8c46967fe01d4767f
+[client2]                2  ->  ecf2de5604e9c6182e7216c895ec99794da0a8100ee978ef94492316155c67b0
 [client1]        260452597  ->  7171a8e2f17b8501a55f4f943f528666e8137ba9515d910b4dc559d38af1135e
+[client2]                8  ->  ce21b7c354366862da6409a2087b7694374c3587843cfa0bd74e156213b05d41
+[client2]               11  ->  d78bd3d40637d1b405728f69a29ca85976e5e7824f1033e8c46967fe01d4767f
 [client2]        260452597  ->  7171a8e2f17b8501a55f4f943f528666e8137ba9515d910b4dc559d38af1135e
 [client1] sent 5 shuffled digests to the Server (no raw elements sent)
 [client2] sent 4 shuffled digests to the Server (no raw elements sent)
@@ -75,20 +76,20 @@ RUN 2 (A.4 ii) - Client 2's set modified, plain SHA-256
 [client2] INTERSECTION = [2, 260452597]
 
 --- MESSAGES AT THE SERVER for session 'run2' (this is the Server's ENTIRE view) ---
-  [ 4] 13:23:11.111  Server <-- client1      BLINDED_SET
+  [ 4] 16:03:14.306  Server <-- client1      BLINDED_SET
         mode=plain  count=5
-          99e2d08e26e0cf553853271a4d51fa24a533cc7cc262cdbdce98dd64901dddab
-          443d7581c97e9580bbf394b5fdc2a4a61405bceb987c6b1e4f4b6e2ee56c6f9e
           7171a8e2f17b8501a55f4f943f528666e8137ba9515d910b4dc559d38af1135e
           96dcfae20d4e26466b1f7dace43d95372c97aeea149dfa30d7c16f0d2261b9ee
           ecf2de5604e9c6182e7216c895ec99794da0a8100ee978ef94492316155c67b0
-  [ 5] 13:23:11.111  Server <-- client2      BLINDED_SET
+          443d7581c97e9580bbf394b5fdc2a4a61405bceb987c6b1e4f4b6e2ee56c6f9e
+          99e2d08e26e0cf553853271a4d51fa24a533cc7cc262cdbdce98dd64901dddab
+  [ 5] 16:03:14.307  Server <-- client2      BLINDED_SET
         mode=plain  count=4
           ce21b7c354366862da6409a2087b7694374c3587843cfa0bd74e156213b05d41
+          7171a8e2f17b8501a55f4f943f528666e8137ba9515d910b4dc559d38af1135e
           d78bd3d40637d1b405728f69a29ca85976e5e7824f1033e8c46967fe01d4767f
           ecf2de5604e9c6182e7216c895ec99794da0a8100ee978ef94492316155c67b0
-          7171a8e2f17b8501a55f4f943f528666e8137ba9515d910b4dc559d38af1135e
-  [ 6] 13:23:11.113  Server --> both clients INTERSECTION
+  [ 6] 16:03:14.309  Server --> both clients INTERSECTION
         count=2
           7171a8e2f17b8501a55f4f943f528666e8137ba9515d910b4dc559d38af1135e
           ecf2de5604e9c6182e7216c895ec99794da0a8100ee978ef94492316155c67b0
@@ -104,19 +105,19 @@ RUN 3 (A.5 improvement) - same sets as Run 1, keyed HMAC-SHA256
 [client2] private set = ['11', '260452597', '5', '8']  (never leaves this process)
 [client1] sent my Diffie-Hellman public value to the Server for relay
 [client2] sent my Diffie-Hellman public value to the Server for relay
-[client1] derived shared MAC key with client2 (first 8 bytes: 0d9a35a3e1fc4fd5) - the Server cannot derive this
+[client1] derived shared MAC key with client2 (first 8 bytes: ebe9feb4c46e2220) - the Server cannot derive this
 [client1] blinded 5 elements with HMAC-SHA256 (keyed)
-[client1]                1  ->  d984175050c4d484843fcd2391d54b5a68e508ba963b9955ee43e6f8c414c99c
-[client2] derived shared MAC key with client1 (first 8 bytes: 0d9a35a3e1fc4fd5) - the Server cannot derive this
-[client1]                2  ->  0a36c1b80efb2a042cde52f25c153606aaf80cc7557e3e475a7824bb62d52697
+[client1]                1  ->  150b7a9dbcb2db3497144486493616a74c4da15e3f60ea749c28081657fb155a
+[client1]                2  ->  42bd904b376fa8a77c05c56ce0c9827519b567b207ca7163b4bc4048b91d5367
+[client1]                5  ->  7be579342b5452219b433b9a59334037b652fae2acebf642a632da118536565b
+[client1]                9  ->  999dd2e0e5156f55db7e45fe4f81f7caa6029ba2000be877b4affcf827d82a83
+[client1]        260452597  ->  c9c28593b99ded68dce392bd1aa02a4c0c213196e6350f2824a0337a5d874bd3
+[client2] derived shared MAC key with client1 (first 8 bytes: ebe9feb4c46e2220) - the Server cannot derive this
 [client2] blinded 4 elements with HMAC-SHA256 (keyed)
-[client1]                5  ->  b5763743238b490f462b82c565d65604af872f615c7025ac7eddb608e875e2dc
-[client2]                5  ->  b5763743238b490f462b82c565d65604af872f615c7025ac7eddb608e875e2dc
-[client1]                9  ->  7aa0e29577d5da219f43ba916dcca29a36d40100759c95c518df4aef41715627
-[client2]                8  ->  878e990009b4d396b1f24a5995d837626ebf7de7811937a0b57f3b690702aede
-[client1]        260452597  ->  46717583d0341da9b160b806bd4af9effffe1e40a48fa2ae71bb5b67cf5bf7d6
-[client2]               11  ->  43b24e2c81ff967f8664e91a32a8bb0e3f34271252a044ae35cc0d0a82431a5f
-[client2]        260452597  ->  46717583d0341da9b160b806bd4af9effffe1e40a48fa2ae71bb5b67cf5bf7d6
+[client2]                5  ->  7be579342b5452219b433b9a59334037b652fae2acebf642a632da118536565b
+[client2]                8  ->  e7adf6a14db6f75b4bb6d804342f0e6219b93cff8b599071ecd5e533d0e63a1f
+[client2]               11  ->  a8f1ae20f0883b3d308a6308eb9b65049a47ed269307091f7f0e60a3ef8d67bb
+[client2]        260452597  ->  c9c28593b99ded68dce392bd1aa02a4c0c213196e6350f2824a0337a5d874bd3
 [client1] sent 5 shuffled digests to the Server (no raw elements sent)
 [client2] sent 4 shuffled digests to the Server (no raw elements sent)
 [client1] Server returned 2 intersecting digest(s)
@@ -125,31 +126,31 @@ RUN 3 (A.5 improvement) - same sets as Run 1, keyed HMAC-SHA256
 [client2] INTERSECTION = [5, 260452597]
 
 --- MESSAGES AT THE SERVER for session 'run3' (this is the Server's ENTIRE view) ---
-  [ 7] 13:23:11.123  Server <-- client1      DH_PUBLIC_KEY
-        {'public_key_truncated': '19187730290793536322304281351804...'}
-  [ 8] 13:23:11.123  Server <-- client2      DH_PUBLIC_KEY
-        {'public_key_truncated': '16149894309855154877068459987425...'}
-  [ 9] 13:23:11.124  Server --> client1      DH_PEER_KEY
-        {'peer': 'client2', 'public_key_truncated': '16149894309855154877068459987425...'}
-  [10] 13:23:11.124  Server --> client2      DH_PEER_KEY
-        {'peer': 'client1', 'public_key_truncated': '19187730290793536322304281351804...'}
-  [11] 13:23:11.135  Server <-- client1      BLINDED_SET
+  [ 7] 16:03:14.318  Server <-- client1      DH_PUBLIC_KEY
+        {'public_key_truncated': '92015138781412797616701388096561...'}
+  [ 8] 16:03:14.319  Server <-- client2      DH_PUBLIC_KEY
+        {'public_key_truncated': '19222059869402434019996147936238...'}
+  [ 9] 16:03:14.320  Server --> client1      DH_PEER_KEY
+        {'peer': 'client2', 'public_key_truncated': '19222059869402434019996147936238...'}
+  [10] 16:03:14.325  Server --> client2      DH_PEER_KEY
+        {'peer': 'client1', 'public_key_truncated': '92015138781412797616701388096561...'}
+  [11] 16:03:14.331  Server <-- client1      BLINDED_SET
         mode=hmac  count=5
-          b5763743238b490f462b82c565d65604af872f615c7025ac7eddb608e875e2dc
-          d984175050c4d484843fcd2391d54b5a68e508ba963b9955ee43e6f8c414c99c
-          7aa0e29577d5da219f43ba916dcca29a36d40100759c95c518df4aef41715627
-          0a36c1b80efb2a042cde52f25c153606aaf80cc7557e3e475a7824bb62d52697
-          46717583d0341da9b160b806bd4af9effffe1e40a48fa2ae71bb5b67cf5bf7d6
-  [12] 13:23:11.135  Server <-- client2      BLINDED_SET
+          42bd904b376fa8a77c05c56ce0c9827519b567b207ca7163b4bc4048b91d5367
+          c9c28593b99ded68dce392bd1aa02a4c0c213196e6350f2824a0337a5d874bd3
+          150b7a9dbcb2db3497144486493616a74c4da15e3f60ea749c28081657fb155a
+          7be579342b5452219b433b9a59334037b652fae2acebf642a632da118536565b
+          999dd2e0e5156f55db7e45fe4f81f7caa6029ba2000be877b4affcf827d82a83
+  [12] 16:03:14.332  Server <-- client2      BLINDED_SET
         mode=hmac  count=4
-          46717583d0341da9b160b806bd4af9effffe1e40a48fa2ae71bb5b67cf5bf7d6
-          b5763743238b490f462b82c565d65604af872f615c7025ac7eddb608e875e2dc
-          878e990009b4d396b1f24a5995d837626ebf7de7811937a0b57f3b690702aede
-          43b24e2c81ff967f8664e91a32a8bb0e3f34271252a044ae35cc0d0a82431a5f
-  [13] 13:23:11.137  Server --> both clients INTERSECTION
+          e7adf6a14db6f75b4bb6d804342f0e6219b93cff8b599071ecd5e533d0e63a1f
+          a8f1ae20f0883b3d308a6308eb9b65049a47ed269307091f7f0e60a3ef8d67bb
+          7be579342b5452219b433b9a59334037b652fae2acebf642a632da118536565b
+          c9c28593b99ded68dce392bd1aa02a4c0c213196e6350f2824a0337a5d874bd3
+  [13] 16:03:14.333  Server --> both clients INTERSECTION
         count=2
-          46717583d0341da9b160b806bd4af9effffe1e40a48fa2ae71bb5b67cf5bf7d6
-          b5763743238b490f462b82c565d65604af872f615c7025ac7eddb608e875e2dc
+          7be579342b5452219b433b9a59334037b652fae2acebf642a632da118536565b
+          c9c28593b99ded68dce392bd1aa02a4c0c213196e6350f2824a0337a5d874bd3
   NOTE: no raw set element appears anywhere above.
 
 ==========================================================================
@@ -160,7 +161,7 @@ A.5  SERVER-SIDE BRUTE-FORCE ATTACK ON SESSION 'run1'
   Blinding mode used by the clients: plain
 
   Phase 1: hash every integer in [0, 10000) and compare.
-           10,000 candidates hashed in 0.01s (1,436,034 hashes/second, single-threaded Python)
+           10,000 candidates hashed in 0.01s (1,329,227 hashes/second, single-threaded Python)
 
   client1: recovered 4/5 elements
       96dcfae20d4e26466b1f7dac...  ->  1

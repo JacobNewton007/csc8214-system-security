@@ -12,8 +12,8 @@
         ],
         "digests_sent": [
           "7171a8e2f17b8501a55f4f943f528666e8137ba9515d910b4dc559d38af1135e",
-          "443d7581c97e9580bbf394b5fdc2a4a61405bceb987c6b1e4f4b6e2ee56c6f9e",
           "d78bd3d40637d1b405728f69a29ca85976e5e7824f1033e8c46967fe01d4767f",
+          "443d7581c97e9580bbf394b5fdc2a4a61405bceb987c6b1e4f4b6e2ee56c6f9e",
           "ce21b7c354366862da6409a2087b7694374c3587843cfa0bd74e156213b05d41"
         ],
         "lookup_table": {
@@ -43,10 +43,10 @@
         ],
         "digests_sent": [
           "443d7581c97e9580bbf394b5fdc2a4a61405bceb987c6b1e4f4b6e2ee56c6f9e",
-          "96dcfae20d4e26466b1f7dace43d95372c97aeea149dfa30d7c16f0d2261b9ee",
-          "7171a8e2f17b8501a55f4f943f528666e8137ba9515d910b4dc559d38af1135e",
           "99e2d08e26e0cf553853271a4d51fa24a533cc7cc262cdbdce98dd64901dddab",
-          "ecf2de5604e9c6182e7216c895ec99794da0a8100ee978ef94492316155c67b0"
+          "96dcfae20d4e26466b1f7dace43d95372c97aeea149dfa30d7c16f0d2261b9ee",
+          "ecf2de5604e9c6182e7216c895ec99794da0a8100ee978ef94492316155c67b0",
+          "7171a8e2f17b8501a55f4f943f528666e8137ba9515d910b4dc559d38af1135e"
         ],
         "lookup_table": {
           "96dcfae20d4e26466b1f7dace43d95372c97aeea149dfa30d7c16f0d2261b9ee": "1",
@@ -68,7 +68,7 @@
     "server_log": [
       {
         "seq": 1,
-        "time": "13:23:11.106",
+        "time": "16:03:14.300",
         "session": "run1",
         "direction": "received",
         "peer": "client2",
@@ -78,15 +78,15 @@
           "count": 4,
           "digests": [
             "7171a8e2f17b8501a55f4f943f528666e8137ba9515d910b4dc559d38af1135e",
-            "443d7581c97e9580bbf394b5fdc2a4a61405bceb987c6b1e4f4b6e2ee56c6f9e",
             "d78bd3d40637d1b405728f69a29ca85976e5e7824f1033e8c46967fe01d4767f",
+            "443d7581c97e9580bbf394b5fdc2a4a61405bceb987c6b1e4f4b6e2ee56c6f9e",
             "ce21b7c354366862da6409a2087b7694374c3587843cfa0bd74e156213b05d41"
           ]
         }
       },
       {
         "seq": 2,
-        "time": "13:23:11.107",
+        "time": "16:03:14.301",
         "session": "run1",
         "direction": "received",
         "peer": "client1",
@@ -96,16 +96,16 @@
           "count": 5,
           "digests": [
             "443d7581c97e9580bbf394b5fdc2a4a61405bceb987c6b1e4f4b6e2ee56c6f9e",
-            "96dcfae20d4e26466b1f7dace43d95372c97aeea149dfa30d7c16f0d2261b9ee",
-            "7171a8e2f17b8501a55f4f943f528666e8137ba9515d910b4dc559d38af1135e",
             "99e2d08e26e0cf553853271a4d51fa24a533cc7cc262cdbdce98dd64901dddab",
-            "ecf2de5604e9c6182e7216c895ec99794da0a8100ee978ef94492316155c67b0"
+            "96dcfae20d4e26466b1f7dace43d95372c97aeea149dfa30d7c16f0d2261b9ee",
+            "ecf2de5604e9c6182e7216c895ec99794da0a8100ee978ef94492316155c67b0",
+            "7171a8e2f17b8501a55f4f943f528666e8137ba9515d910b4dc559d38af1135e"
           ]
         }
       },
       {
         "seq": 3,
-        "time": "13:23:11.108",
+        "time": "16:03:14.303",
         "session": "run1",
         "direction": "sent",
         "peer": "both clients",
@@ -133,11 +133,11 @@
           260452597
         ],
         "digests_sent": [
-          "99e2d08e26e0cf553853271a4d51fa24a533cc7cc262cdbdce98dd64901dddab",
-          "443d7581c97e9580bbf394b5fdc2a4a61405bceb987c6b1e4f4b6e2ee56c6f9e",
           "7171a8e2f17b8501a55f4f943f528666e8137ba9515d910b4dc559d38af1135e",
           "96dcfae20d4e26466b1f7dace43d95372c97aeea149dfa30d7c16f0d2261b9ee",
-          "ecf2de5604e9c6182e7216c895ec99794da0a8100ee978ef94492316155c67b0"
+          "ecf2de5604e9c6182e7216c895ec99794da0a8100ee978ef94492316155c67b0",
+          "443d7581c97e9580bbf394b5fdc2a4a61405bceb987c6b1e4f4b6e2ee56c6f9e",
+          "99e2d08e26e0cf553853271a4d51fa24a533cc7cc262cdbdce98dd64901dddab"
         ],
         "lookup_table": {
           "96dcfae20d4e26466b1f7dace43d95372c97aeea149dfa30d7c16f0d2261b9ee": "1",
@@ -166,9 +166,9 @@
         ],
         "digests_sent": [
           "ce21b7c354366862da6409a2087b7694374c3587843cfa0bd74e156213b05d41",
+          "7171a8e2f17b8501a55f4f943f528666e8137ba9515d910b4dc559d38af1135e",
           "d78bd3d40637d1b405728f69a29ca85976e5e7824f1033e8c46967fe01d4767f",
-          "ecf2de5604e9c6182e7216c895ec99794da0a8100ee978ef94492316155c67b0",
-          "7171a8e2f17b8501a55f4f943f528666e8137ba9515d910b4dc559d38af1135e"
+          "ecf2de5604e9c6182e7216c895ec99794da0a8100ee978ef94492316155c67b0"
         ],
         "lookup_table": {
           "ecf2de5604e9c6182e7216c895ec99794da0a8100ee978ef94492316155c67b0": "2",
@@ -189,7 +189,7 @@
     "server_log": [
       {
         "seq": 4,
-        "time": "13:23:11.111",
+        "time": "16:03:14.306",
         "session": "run2",
         "direction": "received",
         "peer": "client1",
@@ -198,17 +198,17 @@
           "mode": "plain",
           "count": 5,
           "digests": [
-            "99e2d08e26e0cf553853271a4d51fa24a533cc7cc262cdbdce98dd64901dddab",
-            "443d7581c97e9580bbf394b5fdc2a4a61405bceb987c6b1e4f4b6e2ee56c6f9e",
             "7171a8e2f17b8501a55f4f943f528666e8137ba9515d910b4dc559d38af1135e",
             "96dcfae20d4e26466b1f7dace43d95372c97aeea149dfa30d7c16f0d2261b9ee",
-            "ecf2de5604e9c6182e7216c895ec99794da0a8100ee978ef94492316155c67b0"
+            "ecf2de5604e9c6182e7216c895ec99794da0a8100ee978ef94492316155c67b0",
+            "443d7581c97e9580bbf394b5fdc2a4a61405bceb987c6b1e4f4b6e2ee56c6f9e",
+            "99e2d08e26e0cf553853271a4d51fa24a533cc7cc262cdbdce98dd64901dddab"
           ]
         }
       },
       {
         "seq": 5,
-        "time": "13:23:11.111",
+        "time": "16:03:14.307",
         "session": "run2",
         "direction": "received",
         "peer": "client2",
@@ -218,15 +218,15 @@
           "count": 4,
           "digests": [
             "ce21b7c354366862da6409a2087b7694374c3587843cfa0bd74e156213b05d41",
+            "7171a8e2f17b8501a55f4f943f528666e8137ba9515d910b4dc559d38af1135e",
             "d78bd3d40637d1b405728f69a29ca85976e5e7824f1033e8c46967fe01d4767f",
-            "ecf2de5604e9c6182e7216c895ec99794da0a8100ee978ef94492316155c67b0",
-            "7171a8e2f17b8501a55f4f943f528666e8137ba9515d910b4dc559d38af1135e"
+            "ecf2de5604e9c6182e7216c895ec99794da0a8100ee978ef94492316155c67b0"
           ]
         }
       },
       {
         "seq": 6,
-        "time": "13:23:11.113",
+        "time": "16:03:14.309",
         "session": "run2",
         "direction": "sent",
         "peer": "both clients",
@@ -254,22 +254,22 @@
           260452597
         ],
         "digests_sent": [
-          "b5763743238b490f462b82c565d65604af872f615c7025ac7eddb608e875e2dc",
-          "d984175050c4d484843fcd2391d54b5a68e508ba963b9955ee43e6f8c414c99c",
-          "7aa0e29577d5da219f43ba916dcca29a36d40100759c95c518df4aef41715627",
-          "0a36c1b80efb2a042cde52f25c153606aaf80cc7557e3e475a7824bb62d52697",
-          "46717583d0341da9b160b806bd4af9effffe1e40a48fa2ae71bb5b67cf5bf7d6"
+          "42bd904b376fa8a77c05c56ce0c9827519b567b207ca7163b4bc4048b91d5367",
+          "c9c28593b99ded68dce392bd1aa02a4c0c213196e6350f2824a0337a5d874bd3",
+          "150b7a9dbcb2db3497144486493616a74c4da15e3f60ea749c28081657fb155a",
+          "7be579342b5452219b433b9a59334037b652fae2acebf642a632da118536565b",
+          "999dd2e0e5156f55db7e45fe4f81f7caa6029ba2000be877b4affcf827d82a83"
         ],
         "lookup_table": {
-          "d984175050c4d484843fcd2391d54b5a68e508ba963b9955ee43e6f8c414c99c": "1",
-          "0a36c1b80efb2a042cde52f25c153606aaf80cc7557e3e475a7824bb62d52697": "2",
-          "b5763743238b490f462b82c565d65604af872f615c7025ac7eddb608e875e2dc": "5",
-          "7aa0e29577d5da219f43ba916dcca29a36d40100759c95c518df4aef41715627": "9",
-          "46717583d0341da9b160b806bd4af9effffe1e40a48fa2ae71bb5b67cf5bf7d6": "260452597"
+          "150b7a9dbcb2db3497144486493616a74c4da15e3f60ea749c28081657fb155a": "1",
+          "42bd904b376fa8a77c05c56ce0c9827519b567b207ca7163b4bc4048b91d5367": "2",
+          "7be579342b5452219b433b9a59334037b652fae2acebf642a632da118536565b": "5",
+          "999dd2e0e5156f55db7e45fe4f81f7caa6029ba2000be877b4affcf827d82a83": "9",
+          "c9c28593b99ded68dce392bd1aa02a4c0c213196e6350f2824a0337a5d874bd3": "260452597"
         },
         "intersection_digests": [
-          "46717583d0341da9b160b806bd4af9effffe1e40a48fa2ae71bb5b67cf5bf7d6",
-          "b5763743238b490f462b82c565d65604af872f615c7025ac7eddb608e875e2dc"
+          "7be579342b5452219b433b9a59334037b652fae2acebf642a632da118536565b",
+          "c9c28593b99ded68dce392bd1aa02a4c0c213196e6350f2824a0337a5d874bd3"
         ],
         "intersection": [
           5,
@@ -286,20 +286,20 @@
           260452597
         ],
         "digests_sent": [
-          "46717583d0341da9b160b806bd4af9effffe1e40a48fa2ae71bb5b67cf5bf7d6",
-          "b5763743238b490f462b82c565d65604af872f615c7025ac7eddb608e875e2dc",
-          "878e990009b4d396b1f24a5995d837626ebf7de7811937a0b57f3b690702aede",
-          "43b24e2c81ff967f8664e91a32a8bb0e3f34271252a044ae35cc0d0a82431a5f"
+          "e7adf6a14db6f75b4bb6d804342f0e6219b93cff8b599071ecd5e533d0e63a1f",
+          "a8f1ae20f0883b3d308a6308eb9b65049a47ed269307091f7f0e60a3ef8d67bb",
+          "7be579342b5452219b433b9a59334037b652fae2acebf642a632da118536565b",
+          "c9c28593b99ded68dce392bd1aa02a4c0c213196e6350f2824a0337a5d874bd3"
         ],
         "lookup_table": {
-          "b5763743238b490f462b82c565d65604af872f615c7025ac7eddb608e875e2dc": "5",
-          "878e990009b4d396b1f24a5995d837626ebf7de7811937a0b57f3b690702aede": "8",
-          "43b24e2c81ff967f8664e91a32a8bb0e3f34271252a044ae35cc0d0a82431a5f": "11",
-          "46717583d0341da9b160b806bd4af9effffe1e40a48fa2ae71bb5b67cf5bf7d6": "260452597"
+          "7be579342b5452219b433b9a59334037b652fae2acebf642a632da118536565b": "5",
+          "e7adf6a14db6f75b4bb6d804342f0e6219b93cff8b599071ecd5e533d0e63a1f": "8",
+          "a8f1ae20f0883b3d308a6308eb9b65049a47ed269307091f7f0e60a3ef8d67bb": "11",
+          "c9c28593b99ded68dce392bd1aa02a4c0c213196e6350f2824a0337a5d874bd3": "260452597"
         },
         "intersection_digests": [
-          "46717583d0341da9b160b806bd4af9effffe1e40a48fa2ae71bb5b67cf5bf7d6",
-          "b5763743238b490f462b82c565d65604af872f615c7025ac7eddb608e875e2dc"
+          "7be579342b5452219b433b9a59334037b652fae2acebf642a632da118536565b",
+          "c9c28593b99ded68dce392bd1aa02a4c0c213196e6350f2824a0337a5d874bd3"
         ],
         "intersection": [
           5,
@@ -310,53 +310,53 @@
     "server_log": [
       {
         "seq": 7,
-        "time": "13:23:11.123",
+        "time": "16:03:14.318",
         "session": "run3",
         "direction": "received",
         "peer": "client1",
         "message": "DH_PUBLIC_KEY",
         "payload": {
-          "public_key_truncated": "19187730290793536322304281351804..."
+          "public_key_truncated": "92015138781412797616701388096561..."
         }
       },
       {
         "seq": 8,
-        "time": "13:23:11.123",
+        "time": "16:03:14.319",
         "session": "run3",
         "direction": "received",
         "peer": "client2",
         "message": "DH_PUBLIC_KEY",
         "payload": {
-          "public_key_truncated": "16149894309855154877068459987425..."
+          "public_key_truncated": "19222059869402434019996147936238..."
         }
       },
       {
         "seq": 9,
-        "time": "13:23:11.124",
+        "time": "16:03:14.320",
         "session": "run3",
         "direction": "sent",
         "peer": "client1",
         "message": "DH_PEER_KEY",
         "payload": {
           "peer": "client2",
-          "public_key_truncated": "16149894309855154877068459987425..."
+          "public_key_truncated": "19222059869402434019996147936238..."
         }
       },
       {
         "seq": 10,
-        "time": "13:23:11.124",
+        "time": "16:03:14.325",
         "session": "run3",
         "direction": "sent",
         "peer": "client2",
         "message": "DH_PEER_KEY",
         "payload": {
           "peer": "client1",
-          "public_key_truncated": "19187730290793536322304281351804..."
+          "public_key_truncated": "92015138781412797616701388096561..."
         }
       },
       {
         "seq": 11,
-        "time": "13:23:11.135",
+        "time": "16:03:14.331",
         "session": "run3",
         "direction": "received",
         "peer": "client1",
@@ -365,17 +365,17 @@
           "mode": "hmac",
           "count": 5,
           "digests": [
-            "b5763743238b490f462b82c565d65604af872f615c7025ac7eddb608e875e2dc",
-            "d984175050c4d484843fcd2391d54b5a68e508ba963b9955ee43e6f8c414c99c",
-            "7aa0e29577d5da219f43ba916dcca29a36d40100759c95c518df4aef41715627",
-            "0a36c1b80efb2a042cde52f25c153606aaf80cc7557e3e475a7824bb62d52697",
-            "46717583d0341da9b160b806bd4af9effffe1e40a48fa2ae71bb5b67cf5bf7d6"
+            "42bd904b376fa8a77c05c56ce0c9827519b567b207ca7163b4bc4048b91d5367",
+            "c9c28593b99ded68dce392bd1aa02a4c0c213196e6350f2824a0337a5d874bd3",
+            "150b7a9dbcb2db3497144486493616a74c4da15e3f60ea749c28081657fb155a",
+            "7be579342b5452219b433b9a59334037b652fae2acebf642a632da118536565b",
+            "999dd2e0e5156f55db7e45fe4f81f7caa6029ba2000be877b4affcf827d82a83"
           ]
         }
       },
       {
         "seq": 12,
-        "time": "13:23:11.135",
+        "time": "16:03:14.332",
         "session": "run3",
         "direction": "received",
         "peer": "client2",
@@ -384,16 +384,16 @@
           "mode": "hmac",
           "count": 4,
           "digests": [
-            "46717583d0341da9b160b806bd4af9effffe1e40a48fa2ae71bb5b67cf5bf7d6",
-            "b5763743238b490f462b82c565d65604af872f615c7025ac7eddb608e875e2dc",
-            "878e990009b4d396b1f24a5995d837626ebf7de7811937a0b57f3b690702aede",
-            "43b24e2c81ff967f8664e91a32a8bb0e3f34271252a044ae35cc0d0a82431a5f"
+            "e7adf6a14db6f75b4bb6d804342f0e6219b93cff8b599071ecd5e533d0e63a1f",
+            "a8f1ae20f0883b3d308a6308eb9b65049a47ed269307091f7f0e60a3ef8d67bb",
+            "7be579342b5452219b433b9a59334037b652fae2acebf642a632da118536565b",
+            "c9c28593b99ded68dce392bd1aa02a4c0c213196e6350f2824a0337a5d874bd3"
           ]
         }
       },
       {
         "seq": 13,
-        "time": "13:23:11.137",
+        "time": "16:03:14.333",
         "session": "run3",
         "direction": "sent",
         "peer": "both clients",
@@ -401,8 +401,8 @@
         "payload": {
           "count": 2,
           "digests": [
-            "46717583d0341da9b160b806bd4af9effffe1e40a48fa2ae71bb5b67cf5bf7d6",
-            "b5763743238b490f462b82c565d65604af872f615c7025ac7eddb608e875e2dc"
+            "7be579342b5452219b433b9a59334037b652fae2acebf642a632da118536565b",
+            "c9c28593b99ded68dce392bd1aa02a4c0c213196e6350f2824a0337a5d874bd3"
           ]
         }
       }

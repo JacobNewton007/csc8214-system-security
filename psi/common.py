@@ -50,7 +50,7 @@ def encode_element(element: Element) -> bytes:
 
 
 def digest(element: Element, key: bytes | None = None) -> str:
-    """PROTOCOL STEP 2 - blind one element, keyed if a key is supplied."""
+    """PROTOCOL STEP 1 - blind one element, keyed if a key is supplied."""
     message = TAG + encode_element(element)
     if key is None:
         return hashlib.sha256(message).hexdigest()
