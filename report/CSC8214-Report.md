@@ -2,17 +2,6 @@
 
 **Student number (ID):** `260452597`
 
-## Acknowledgement of AI use
-
-I used Claude (Anthropic), through the Claude Code interface, on 17 November 2026 while
-preparing this submission. I supplied the assignment brief, the module's lecture slides and lab
-handouts, and directed the work across successive rounds of review and revision. It was used to
-design and implement the private set intersection protocol and its attack script in Python, to
-write and test the Solidity crowdfunding contract, to run those programs and capture the outputs
-quoted here, and to draft the written answers in Parts A to D, which were then checked against
-the lecture material and revised. The code and prose in this report were produced with that
-assistance rather than written unaided.
-
 All outputs quoted below were produced by `python3 psi/run_experiments.py` and
 `npx hardhat run scripts/test_crowdfunding.js`, and are copied verbatim from
 `results/transcript.txt` and `results/crowdfunding_tests.txt`. Source code is in Appendix A.
