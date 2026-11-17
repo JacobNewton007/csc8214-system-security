@@ -2,6 +2,13 @@
 
 **Student number (ID):** `260452597`
 
+> **AI ACKNOWLEDGEMENT — COMPLETE OR DELETE BEFORE SUBMITTING.** The University asks you to
+> explain how, why and when AI contributed to assessed work. The suggested form is: *"I used
+> [tool and version] on [date] to [what you asked it]. I checked the suggestions against my
+> reading and wrote the submitted answer myself."* Replace this with an accurate description of
+> your own use, and check the brief for what is permitted — an acknowledgement does not make a
+> prohibited use acceptable.
+
 All outputs quoted below were produced by `python3 psi/run_experiments.py` and
 `npx hardhat run scripts/test_crowdfunding.js`, and are copied verbatim from
 `results/transcript.txt` and `results/crowdfunding_tests.txt`. Source code is in Appendix A.
@@ -46,8 +53,8 @@ images held by child-protection organisations.
 
 Plain data sharing fails in both directions. Uploading every user photo for checking would
 concentrate the private photo library of every customer on one company's servers — a permanent
-target for breach, insider abuse and legal compulsion, and a disproportionate intrusion given
-that virtually no photo is a match. Publishing the database to devices fails too: its entries
+target for breach, insider abuse and legal compulsion, and an intrusion far wider than the
+question being asked. Publishing the database to devices fails too: its entries
 identify known illegal material, so anyone holding them could test candidate images and alter
 whichever matched until they evaded detection.
 
@@ -55,9 +62,9 @@ An intersection is exactly the computation required, and nothing more. The quest
 genuinely "which of this device's images appear in that database?", and neither side may see
 the other's set. The design therefore ran the matching on the device against a blinded copy of
 the database, so the device learned nothing about the database contents and Apple learned
-nothing about the non-matching images — which is to say, essentially all of them. A threshold
-was applied so that no result was revealed until a set number of matches had accumulated,
-limiting the damage from a single false positive.
+nothing about the images that did not match. A threshold was applied so that no result was
+revealed until a set number of matches had accumulated, limiting the damage from a single false
+positive.
 
 The example also shows PSI's limit. The protocol can guarantee that only the intersection is
 revealed; it cannot decide whether computing that intersection is legitimate. The scheme was
@@ -216,9 +223,11 @@ RESULT: 7/7 distinct digests inverted.
 is `SHA-256("CSC8214-PSI-v1|5")`. The Server computed that by trying `x = 5`, and thereby
 learned that both clients hold the element `5` — not merely that they share *something*. Every
 element of both sets was recovered in well under a second. Even without the prefix assumption of
-Phase 2, the whole nine-digit space is 10⁹ candidates: roughly 0.2 hours at the rate measured
-above, and seconds on a GPU. **The protocol of A.3 protects the elements from a network
-eavesdropper but not from the Server.**
+Phase 2, the whole nine-digit space is 10⁹ candidates, which at the 1.33 million hashes/second
+measured here is about 0.2 hours on one unoptimised Python thread. Optimised or parallel
+implementations would be faster, but this experiment did not measure them, so the figure that
+the evidence supports is the single-thread one — and it is already far too low. **The protocol
+of A.3 protects the elements from a network eavesdropper but not from the Server.**
 
 ### One possible improvement, and its limitations
 
@@ -661,22 +670,23 @@ Argon2id or bcrypt, so that each guess costs real time.
 
 **How it supports the two hospitals.** In federated learning the data never moves; the model
 does. One round has four steps: the server sends the global model parameters to both hospitals;
-each trains that copy locally for a number of local epochs on its own examples; each returns its
-trained parameters, its training sample count and scalar metrics — never the examples; and the
+each trains that copy locally for several local epochs on its own examples; each returns its
+trained parameters, training sample count and scalar metrics — never the examples; and the
 server combines the replies with **Federated Averaging (FedAvg)**, a sample-count-weighted
-average, so a hospital with more training examples gets a larger share of the weight. With `nₖ`
+average, so a hospital with more examples gets a larger share of the weight. With `nₖ`
 the number of training examples at client *k*, `w ← Σₖ (nₖ / Σⱼ nⱼ) wₖ`. If A returns 0.4 after
 training on 100 examples and B returns 0.8 on 300, the result is 0.7, not the unweighted 0.6.
 Repeating the round gives both a model shaped by the union of their patients.
 
-**Privacy benefit.** Raw patient records stay in the hospital that holds them. There is no
+**Privacy benefit.** Raw patient records stay in the hospital that holds them: there is no
 pooled database to breach or subpoena, and each hospital keeps control over access to its own
 records while contributing to the shared model.
 
 **Privacy risk that remains.** Keeping examples local does not guarantee privacy: shared
 updates still reveal information about the data. Zhu et al. showed training examples can
-sometimes be reconstructed from shared gradients, and membership inference can reveal whether a
-person's record was used — which in a hospital discloses that they were a patient.
+sometimes be reconstructed from shared gradients *under their experimental conditions*, and
+membership inference can reveal whether a person's record was used — which in a hospital
+discloses that they were a patient.
 
 The usual mitigations are secure aggregation, which hides individual updates from the server,
 and differential privacy, which bounds any one record's influence. **With two participants
