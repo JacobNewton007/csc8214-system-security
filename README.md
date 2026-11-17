@@ -1,6 +1,8 @@
 # CSC8214 System Security — Assignment
 
-The report to submit is **[report/CSC8214-Report.md](report/CSC8214-Report.md)**.
+The report to submit is **[report/CSC8214-Report.md](report/CSC8214-Report.md)**. It is generated
+from `report/report.template.md` by `python3 scripts/build_report.py`, which inlines the source
+files and captured outputs — edit the template, not the built report.
 
 ## Before anything else
 
@@ -64,7 +66,7 @@ python3 psi/attack_bruteforce.py --session run1 --id-prefix 2604 --id-width 5
 |---|---|
 | `contracts/Crowdfunding.sol` | the contract (B.4) |
 | `contracts/ReentrantBeneficiary.sol` | hostile beneficiary used to test the reentrancy defence |
-| `scripts/test_crowdfunding.js` | 32 functional tests |
+| `scripts/test_crowdfunding.js` | 33 functional tests |
 
 The contract is written for the Remix IDE (`https://remix.ethereum.org`) used in the lab —
 paste `Crowdfunding.sol` in, compile with 0.8.26, and deploy on the JavaScript VM. The same
@@ -78,7 +80,16 @@ npm install
 npx hardhat run scripts/test_crowdfunding.js
 ```
 
-Last run: **32 passed, 0 failed** (`results/crowdfunding_tests.txt`).
+Last run: **33 passed, 0 failed** (`results/crowdfunding_tests.txt`).
+
+## Part C — Lab 1 Task 3
+
+`scripts/lab1_task3_attack.py` reproduces the dictionary attack discussed in C.2: it hashes each
+candidate password from Lab 1 Task 3 and compares against the given ciphertext `X`.
+
+```bash
+python3 scripts/lab1_task3_attack.py
+```
 
 ## Results
 
@@ -88,3 +99,4 @@ Last run: **32 passed, 0 failed** (`results/crowdfunding_tests.txt`).
 | `results/results.json` | the same data, machine-readable |
 | `results/server_log_full.json` | every message the Server saw, all sessions |
 | `results/crowdfunding_tests.txt` | contract test output |
+| `results/lab1_task3_attack.txt` | Lab 1 Task 3 dictionary attack output |

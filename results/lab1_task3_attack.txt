@@ -1,0 +1,9 @@
+X = 872715f9eb56b72a64f8f19b6297d54931d26bbc4923ccdd4354059a61dae80b
+
+candidate        SHA-256(candidate)                                              
+----------------------------------------------------------------------------------
+11211223         1ee56c9d887cf4e7f5d2bb9de1cc712231c7246bff73f7cd971d70b6a88e2c75
+Password         e7cf3ef4f17c3999a94f2c6f612e8a888e5b1026878e4e19398b23bd38ec221a
+1989-Newcastle   872715f9eb56b72a64f8f19b6297d54931d26bbc4923ccdd4354059a61dae80b  <== MATCH
+----------------------------------------------------------------------------------
+plaintext Y = '1989-Newcastle', found after 3 of 4 hashes

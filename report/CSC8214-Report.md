@@ -634,33 +634,47 @@ defeats precomputed tables.
 
 ## C.2 Password recovery in Lab 1 (Task 3) (5 marks)
 
-> **TO COMPLETE FROM THE LAB 1 HANDOUT — delete this note before submitting.** The reasoning
-> below is correct in substance but needs Task 3's specifics: name the scheme actually used, say
-> what `X` was, and give the number of candidate passwords the task supplied.
+Task 3 demonstrated the misuse `cipher = SHA256(plaintext)` — encryption replaced by a bare
+hash. We were given a ciphertext `X` and a list of four candidate passwords, and asked which had
+been "encrypted". Hashing each candidate and comparing to `X` recovers the plaintext on the
+third attempt (`scripts/lab1_task3_attack.py`):
 
-It was possible to identify exactly which password had been encrypted because three properties
-held at once, each harmless alone but fatal together.
+```text
+X = 872715f9eb56b72a64f8f19b6297d54931d26bbc4923ccdd4354059a61dae80b
 
-**The transformation was deterministic and unsalted.** The same plaintext always produced the
-same ciphertext `X`: no per-record salt, no random IV, no nonce. `X` therefore acts as a stable
-fingerprint of its plaintext, and equality of ciphertexts implies equality of plaintexts. This
-is the weakness of ECB mode and of unsalted password hashing alike.
+candidate        SHA-256(candidate)                                              
+----------------------------------------------------------------------------------
+11211223         1ee56c9d887cf4e7f5d2bb9de1cc712231c7246bff73f7cd971d70b6a88e2c75
+Password         e7cf3ef4f17c3999a94f2c6f612e8a888e5b1026878e4e19398b23bd38ec221a
+1989-Newcastle   872715f9eb56b72a64f8f19b6297d54931d26bbc4923ccdd4354059a61dae80b  <== MATCH
+----------------------------------------------------------------------------------
+plaintext Y = '1989-Newcastle', found after 3 of 4 hashes
+```
 
-**The algorithm and its parameters were public.** Because the scheme was known, anyone could
-compute it in the forward direction. Nothing had to be inverted — `X` was never decrypted, and
-the strength of the underlying primitive was never tested.
+The plaintext was `1989-Newcastle`. Three properties made this possible, and all three had to
+hold together.
 
-**The search space was tiny.** The candidates came from a small supplied list. The attack is
-therefore: for each candidate `p`, compute `E(p)` and test whether it equals `X`. The first
-match identifies the password uniquely, because the output space (2²⁵⁶ for SHA-256) is vastly
-larger than the candidate space, so an accidental collision is negligibly unlikely. A handful of
-operations sufficed.
+**No key and no randomness.** The task states that no secret key or randomness is used to
+encrypt the message. Encryption provides confidentiality through a secret key and a random
+value; a hash has neither, so an attacker needs nothing before computing the transformation
+themselves. `X` was never decrypted — SHA-256 was only run forwards.
 
-The lesson is that the primitive was never the weak point. A sound cipher or hash still leaks
-the plaintext when that plaintext is guessable and the transformation is deterministic and
-unsalted. The fixes are a unique random salt or IV per record — which destroys the fingerprint,
-so identical passwords no longer produce identical outputs — and a deliberately slow KDF such as
-Argon2id or bcrypt, so that each guess costs real time.
+**The function is deterministic.** The same plaintext always produces the same digest, so `X`
+is a stable fingerprint of its input and equal digests imply equal plaintexts. That is the
+leakage the lab warns of: identical plaintext gives identical "ciphertext", so an attacker
+detects duplicates and known values.
+
+**The candidate space was tiny.** Four candidates meant at most four hashes, and the match came
+on the third. Because SHA-256's 2²⁵⁶ output space is so much larger than four candidates, an
+accidental collision is negligible, so the match identifies the password uniquely rather than
+merely plausibly.
+
+SHA-256's strength was never the issue; it was used exactly as designed, for a job it was not
+designed for. The fixes follow from the three properties: use an authenticated cipher under a
+key when the message must be recoverable, and store passwords under a slow, salted KDF such as
+Argon2id, whose per-record salt destroys the fingerprint. The lab's closing question — can a
+hash encrypt such that you can later decrypt? — answers itself: a one-way function has no
+inverse.
 
 ---
 
