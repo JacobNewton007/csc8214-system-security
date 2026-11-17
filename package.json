@@ -1,14 +1,14 @@
 {
-  "name": "scratch-2026-11-17-ed2bae",
+  "name": "csc8214-system-security",
   "version": "1.0.0",
-  "main": "index.js",
+  "private": true,
+  "description": "CSC8214 System Security assignment: private set intersection over a client/server protocol, and a Solidity crowdfunding contract",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "compile": "hardhat compile",
+    "test": "hardhat run scripts/test_crowdfunding.js",
+    "psi": "python3 psi/run_experiments.py"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "license": "MIT",
   "devDependencies": {
     "@nomicfoundation/hardhat-ethers": "^3.0.8",
     "ethers": "^6.13.4",
