@@ -263,8 +263,9 @@ function main() {
   });
 
   const document = new Document({
-    creator: "CSC8214 submission",
-    title: "CSC8214 System Security — Assignment and Report",
+    creator: "260452597",
+    lastModifiedBy: "260452597",
+    title: "CSC8214 System Security: Assignment and Report",
     styles: {
       default: {
         document: { run: { font: BODY_FONT, size: 22 } },

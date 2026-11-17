@@ -29,9 +29,9 @@ protocols divide further into **one-off delegation**, where the owners re-encode
 each computation, and **repeated delegation**, where one outsourcing supports any number of
 later intersections. A.3's protocol is a delegated PSI with one-off delegation.
 
-Security is stated against an adversary type. A **passive** (semi-honest) adversary is the
+Security is stated against an adversary type. A passive (semi-honest) adversary is the
 weakest: it follows the protocol but is curious, so a PSI secure against it need only satisfy
-privacy. An **active** (malicious) adversary is the strongest: it may deviate from the
+privacy. An active (malicious) adversary is the strongest: it may deviate from the
 protocol's instructions, so the PSI must additionally guarantee the result's correctness, in
 the sense that deviation producing an incorrect result is detected. Common building blocks are
 hash functions, pseudorandom functions (PRFs), homomorphic encryption and polynomial
@@ -39,9 +39,10 @@ representations for security, and hash tables and Bloom filters for efficiency.
 
 ## A.2 Application
 
-A real-world application is **Apple's proposed system to combat Child Sexual Abuse Material**
+A real-world application is Apple's proposed system to combat Child Sexual Abuse Material
 (2021), which used PSI to check images on a user's device against a database of known illegal
 images held by child-protection organisations.
+The design is described by Bhowmick et al., *The Apple PSI System* (2021), covered in Lecture 4.
 
 Plain data sharing fails in both directions. Uploading every user photo for checking would
 concentrate the private photo library of every customer on one company's servers: a permanent
@@ -59,8 +60,8 @@ revealed until a set number of matches had accumulated, limiting the damage from
 positive.
 
 The example also shows PSI's limit. The protocol can guarantee that only the intersection is
-revealed; it cannot decide whether computing that intersection is legitimate. The scheme was
-withdrawn in 2022 after sustained criticism that the same machinery, once deployed, could be
+revealed; it cannot decide whether computing that intersection is legitimate. Apple later dropped
+the plan, in 2022, after sustained criticism that the same machinery, once deployed, could be
 repointed at any other database. Cryptography constrained what was learned, not what could
 later be asked.
 
@@ -71,7 +72,7 @@ later be asked.
 **delegated PSI** with one-off delegation: the clients encode their sets, the Server compares
 them, and both clients learn `X₁ ∩ X₂` without sending any raw element.
 
-**Threat model.** The Server is **passive (semi-honest)**: it follows the protocol but is
+**Threat model.** The Server is passive (semi-honest): it follows the protocol but is
 curious. The protocol therefore aims at privacy only, not at detecting deviation.
 
 **Primitive.** A cryptographic hash function `H = SHA-256`, with a fixed domain-separation tag
@@ -92,17 +93,13 @@ come out empty.
 1. **Blinding (each client, locally).** Client *i* hashes every element of its set and keeps a
    private lookup table `Tᵢ : digest ↦ element`. The table never leaves the client and is the
    only thing that can invert a digest.
-2. **Submission.** Each client sends only the digests, in **shuffled** order. Shuffling matters:
+2. **Submission.** Each client sends only the digests, in shuffled order. Shuffling matters:
    in set order, a digest's position would leak the ordering of the underlying elements.
 3. **Intersection (Server).** The Server, holding no set of its own, computes `I = D₁ ∩ D₂` and
    returns `I` to both clients.
 4. **Recovery (each client, locally).** Client *i* maps each digest in `I` back through `Tᵢ`.
    Because `H` is deterministic, a shared element yields an identical digest at both clients, so
    `I` holds exactly the digests of `X₁ ∩ X₂` and each client recovers it.
-
-A.5 adds an optional **Step 0**, in which the clients agree a secret key before Step 1 and
-replace `H` with a keyed function. The four steps are otherwise unchanged, and the code comments
-are numbered to match.
 
 **Why no element reaches the Server.** The Server receives only 256-bit digests and returns a
 subset of what it was given. A digest cannot be inverted by computation alone, only by guessing
@@ -172,10 +169,10 @@ is returned again, and it is the same digest string as in Run 1.
 ### What the Server can learn from the messages in A.4
 
 Although no element is sent in the clear, the Server's view is not empty. It directly learns the
-**cardinality** of each set (5 and 4), the **size of the intersection** (2), and, because
-digests are deterministic and unkeyed, **which digests the two clients share** and which are
+cardinality of each set (5 and 4), the size of the intersection (2), and, because
+digests are deterministic and unkeyed, which digests the two clients share and which are
 unique to one of them. Across sessions it learns more: digest `7171a8e2…` appears in Run 1, Run
-2 and in both clients' sets, so the Server can **link** the same element across runs and across
+2 and in both clients' sets, so the Server can link the same element across runs and across
 clients without yet knowing what it is.
 
 ### Could the Server recover elements by hashing candidate values? Yes.
@@ -218,13 +215,13 @@ element of both sets was recovered in well under a second. Even without the pref
 Phase 2, the whole nine-digit space is 10⁹ candidates, which at the 1.33 million hashes/second
 measured here is about 0.2 hours on one unoptimised Python thread. Optimised or parallel
 implementations would be faster, but this experiment did not measure them, so the figure that
-the evidence supports is the single-thread one, and it is already far too low. **The protocol
-of A.3 protects the elements from a network eavesdropper but not from the Server.**
+the evidence supports is the single-thread one, and it is already far too low. The protocol
+of A.3 protects the elements from a network eavesdropper but not from the Server.
 
 ### One possible improvement, and its limitations
 
-**Improvement: blind with a pseudorandom function keyed by a secret the two clients share,
-rather than with an unkeyed hash.** In Step 0 the clients run a Diffie–Hellman exchange, relayed
+Improvement: blind with a pseudorandom function keyed by a secret the two clients share,
+rather than with an unkeyed hash. In Step 0 the clients run a Diffie–Hellman exchange, relayed
 by the Server, and derive `k = KDF(g^{ab})`. They then send `HMAC-SHA256(k, T‖x)`, a PRF keyed
 by `k` and one of the standard PSI building blocks, instead of `SHA-256(T‖x)`. Equality
 still holds for equal elements, so the Server's intersection step is unchanged, but it can no
@@ -275,7 +272,7 @@ consensus on the new state. We can therefore treat a contract as being executed 
 global machine that honestly performs every instruction, even though no individual machine is
 trusted.
 
-The effect is to **minimise trust**, and often operating costs: the parties need not trust one
+The effect is to minimise trust, and often operating costs: the parties need not trust one
 another, nor an intermediary to hold the money or decide whether to honour the agreement. A
 contract is passive: it cannot invoke itself, and acts only when an account calls it. Changing
 its state requires a new transaction published to the network.
@@ -285,9 +282,9 @@ and contracts usually have no private state, which buys transparency at the cost
 
 ## B.2 Comparison and development environment
 
-**The online compiler used in the lab is Remix (`remix.ethereum.org`)**, a browser-based IDE to
+The online compiler used in the lab is Remix (`remix.ethereum.org`), a browser-based IDE to
 write, compile and debug Solidity contracts, with a built-in test chain (set the Environment
-option to the JavaScript VM, which current versions of Remix label the **Remix VM**) so that
+option to the JavaScript VM, which current versions of Remix label the Remix VM) so that
 contracts can be deployed and called without spending real ether.
 
 | | Traditional contract | Smart contract |
@@ -304,9 +301,7 @@ contracts can be deployed and called without spending real ether.
 The deepest difference is that a traditional contract states *intent* and leaves enforcement to
 a system that can apply judgement, whereas a smart contract *is* the enforcement and has no
 judgement at all. A traditional contract with a typo in a payment clause will usually be
-rectified; a smart contract with the same typo pays the wrong amount every time. Deployed
-bytecode cannot be edited, although upgradeable proxy patterns reach new logic through a fixed
-address, at the cost of reintroducing a party who can change the rules.
+rectified; a smart contract with the same typo pays the wrong amount every time.
 
 A second difference is scope. A smart contract acts only on facts it can see on-chain, so
 anything about the physical world must come from a trusted oracle, which reintroduces the
@@ -339,7 +334,7 @@ used, as it can be phished through an intermediate contract.
 **Reentrancy.** When the contract sends Ether with `call`, the recipient's code runs *before*
 the sending function finishes. If it calls back in while the state still says the funds are
 unspent, the guard passes twice, which is how The DAO was drained in 2016. The defence is
-**checks-effects-interactions**: validate, write state, call out last. In B.4
+checks-effects-interactions: validate, write state, call out last. In B.4
 `withdrawn = true` executes before the `call`, so a re-entrant call reverts.
 
 **Checking the return value.** `call` reports failure by returning `false`, so an unchecked
@@ -463,7 +458,7 @@ contract Crowdfunding {
 restricted anyway so that the beneficiary controls the *timing* of the payout, rather than
 having a stranger trigger the transfer at an arbitrary moment.
 
-### Withdrawal **before** the target is reached
+### Withdrawal before the target is reached
 
 `withdraw()` checks the caller is the beneficiary, then reaches
 `if (totalRaised < target) revert TargetNotReached(totalRaised, target);`. The revert rolls the
@@ -471,9 +466,9 @@ whole transaction back atomically: no state changes, no Ether moves, `withdrawn`
 and the only cost is gas. The error carries both figures, so a wallet can show how much is still
 missing. Contributions are therefore safe in the contract until the target is genuinely met.
 
-### Withdrawal **after** the funds have already been withdrawn
+### Withdrawal after the funds have already been withdrawn
 
-The first successful `withdraw()` sets `withdrawn = true` **before** sending anything, so a
+The first successful `withdraw()` sets `withdrawn = true` before sending anything, so a
 second call reverts with `AlreadyWithdrawn` and nothing moves. The ordering is what matters:
 because the flag is written before the external call, even a beneficiary contract that re-enters
 `withdraw()` from its `receive()` function meets the same closed latch, so the funds can leave
@@ -488,7 +483,7 @@ could never be released, so `contribute()` rejects contributions once `withdrawn
 
 ### Test results
 
-`npx hardhat run scripts/test_crowdfunding.js` gives **33 passed, 0 failed**. Full output:
+`npx hardhat run scripts/test_crowdfunding.js` gives 33 passed, 0 failed. Full output:
 
 ```text
 
@@ -598,8 +593,8 @@ the code harder to audit.
 
 ## C.1 Hashing and encryption
 
-**No. A hash function must not be used to encrypt sensitive information, because hashing is not
-encryption.** An encryption scheme uses a key: `Encrypt_k(m) = C`, and the secret key allows the
+No. A hash function must not be used to encrypt sensitive information, because hashing is not
+encryption. An encryption scheme uses a key: `Encrypt_k(m) = C`, and the secret key allows the
 ciphertext to be decrypted and the original plaintext recovered. A cryptographic hash is a
 deterministic, keyless, one-way function that takes an input of arbitrary size and returns a
 fixed-size digest, and which is practically infeasible to invert. There is no decryption
@@ -664,9 +659,7 @@ merely plausibly.
 SHA-256's strength was never the issue; it was used exactly as designed, for a job it was not
 designed for. The fixes follow from the three properties: use an authenticated cipher under a
 key when the message must be recoverable, and store passwords under a slow, salted KDF such as
-Argon2id, whose per-record salt destroys the fingerprint. The lab's closing question, whether a
-hash can encrypt such that you can later decrypt, answers itself: a one-way function has no
-inverse.
+Argon2id, whose per-record salt destroys the fingerprint.
 
 ---
 
@@ -695,15 +688,14 @@ membership inference can reveal whether a person's record was used, which in a h
 discloses that they were a patient.
 
 The usual mitigations are secure aggregation, which hides individual updates from the server,
-and differential privacy, which bounds any one record's influence. **With two participants
-secure aggregation gives little protection against the other hospital**: A knows its own update,
+and differential privacy, which bounds any one record's influence. With two participants
+secure aggregation gives little protection against the other hospital: A knows its own update,
 so subtracting it from the aggregate recovers B's exactly. Here differential privacy carries
 most of the weight, at a cost in accuracy.
 
 ## D.2 Privacy-preserving data cleaning
 
-The method studied is **secure mean imputation using secure aggregation**, which replaces
-pooling with protected totals.
+The method studied is **secure mean imputation using secure aggregation**.
 
 **The plaintext baseline.** Writing `mᵢ = 1` when a value is observed, a central server pools
 the records and computes `μ = Σᵢ xᵢmᵢ / Σᵢ mᵢ`, which requires receiving every record.
@@ -712,8 +704,8 @@ the records and computes `μ = Σᵢ xᵢmᵢ / Σᵢ mᵢ`, which requires rece
 `sₖ = Σᵢ xₖᵢ mₖᵢ`, the sum of the values it observed, and `nₖ = Σᵢ mₖᵢ`, how many it observed.
 Only those protected totals leave the site. Under secure aggregation the coordinator obtains
 `S = Σₖ sₖ` and `N = Σₖ nₖ` without seeing either contribution, computes `μ = S / N` and returns
-it; each hospital fills its own gaps locally with `μ`. Secure aggregation matches the additive
-part exactly, so the imputed value is the same; the coordinator never sees a record.
+it; each hospital fills its own gaps locally with `μ`. The imputed value is the same
+as with pooling, and the coordinator never sees a record.
 
 **Worked example.** Hospital A observes 80, 100 and 120, so `s_A = 300`, `n_A = 3`. Hospital B
 observes 90 and 110, so `s_B = 200`, `n_B = 2`. Then `S = 500`, `N = 5`, `μ = 100`.
@@ -723,9 +715,9 @@ record, becomes a new data controller and a single point of failure, and sees th
 irrelevant to the imputation. Here it sees two totals, and records never leave the hospital.
 
 **Limitations.** The aggregate itself is still revealed, and secure aggregation supports only
-counts, sums and means. A median needs secure ordering, and regression or k-nearest-neighbour
-imputation needs full MPC, which is markedly more expensive. More sharply, **with two hospitals
-the aggregate leaks**: knowing `μ` and `N`, Hospital A computes `S − s_A = s_B` and
+counts, sums and means. Medians and regression
+imputation need heavier MPC. More sharply, with two hospitals
+the aggregate leaks: knowing `μ` and `N`, Hospital A computes `S − s_A = s_B` and
 `N − n_A = n_B`, learning B's sum, count and local mean exactly. Secure aggregation protects
 against the coordinator here, not against the only other participant.
 
@@ -1418,4 +1410,501 @@ main().catch((error) => {
   console.error(error);
   process.exitCode = 1;
 });
+```
+
+## A.5 `psi/attack_bruteforce.py`
+
+```python
+"""Question A.5: the Server tries to invert the digests it legitimately received.
+
+Against the unkeyed protocol of A.3 this succeeds, because the hash function is
+public and deterministic and the element domain is tiny. Against the keyed
+variant it fails, because the Server holds no key.
+
+    python3 psi/attack_bruteforce.py --session run1 --id-prefix 2604
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import time
+import urllib.request
+from collections.abc import Iterable
+from typing import Any
+
+from common import Element, digest
+
+DEFAULT_SERVER = "http://127.0.0.1:8214"
+SMALL_INTEGER_RANGE = 10_000
+STUDENT_NUMBER_DIGITS = 9
+
+
+def fetch_log(server: str) -> list[dict[str, Any]]:
+    with urllib.request.urlopen(f"{server}/log", timeout=10) as response:
+        return json.loads(response.read())["messages"]
+
+
+def harvest(log: list[dict[str, Any]], session: str) -> tuple[dict[str, list[str]], str]:
+    """Everything the Server holds for one session, and the mode used."""
+    digests: dict[str, list[str]] = {}
+    mode = "unknown"
+    for message in log:
+        if message["session"] == session and message["message"] == "BLINDED_SET":
+            digests[message["peer"]] = message["payload"]["digests"]
+            mode = message["payload"].get("mode", "unknown")
+    return digests, mode
+
+
+def brute_force(targets: set[str], candidates: Iterable[Element]
+                ) -> tuple[dict[str, Element], int]:
+    """Hash candidates until every target digest is matched."""
+    recovered: dict[str, Element] = {}
+    tried = 0
+    for candidate in candidates:
+        tried += 1
+        found = digest(candidate)
+        if found in targets:
+            recovered[found] = candidate
+            if len(recovered) == len(targets):
+                break
+    return recovered, tried
+
+
+def report_keyed_failure() -> None:
+    print("  The digests are HMAC-SHA256 under a key agreed between the two")
+    print("  clients by Diffie-Hellman. The Server relayed the public values")
+    print("  g^a and g^b but cannot compute g^ab, so it has no key.")
+    print("  => the Server cannot compute the digest of ANY candidate value.")
+    print("  => 0 of the elements can be recovered by hashing candidates.")
+    print()
+    print("  RESULT: attack fails.")
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="A.5 brute-force attack by the Server")
+    parser.add_argument("--server", default=DEFAULT_SERVER)
+    parser.add_argument("--session", default="run1")
+    parser.add_argument("--small-range", type=int, default=SMALL_INTEGER_RANGE)
+    parser.add_argument("--id-prefix", default=None,
+                        help="student-number prefix the Server is assumed to know")
+    parser.add_argument("--id-width", type=int, default=5,
+                        help="number of unknown digits after the prefix")
+    args = parser.parse_args()
+
+    harvested, mode = harvest(fetch_log(args.server), args.session)
+    if not harvested:
+        raise SystemExit(f"no BLINDED_SET messages logged for session {args.session!r}")
+
+    print("=" * 74)
+    print(f"A.5  SERVER-SIDE BRUTE-FORCE ATTACK ON SESSION {args.session!r}")
+    print("=" * 74)
+    for client, digests in sorted(harvested.items()):
+        print(f"  Server holds {len(digests)} digests from {client}")
+    print(f"  Blinding mode used by the clients: {mode}")
+    print()
+
+    if mode == "hmac":
+        return report_keyed_failure()
+
+    targets = {d for digests in harvested.values() for d in digests}
+
+    print(f"  Phase 1: hash every integer in [0, {args.small_range}) and compare.")
+    started = time.perf_counter()
+    recovered, tried = brute_force(targets, range(args.small_range))
+    elapsed = time.perf_counter() - started
+    rate = tried / max(elapsed, 1e-9)
+    print(f"           {tried:,} candidates hashed in {elapsed:.2f}s "
+          f"({rate:,.0f} hashes/second, single-threaded Python)")
+    print()
+
+    for client, digests in sorted(harvested.items()):
+        found = {d: recovered[d] for d in digests if d in recovered}
+        print(f"  {client}: recovered {len(found)}/{len(digests)} elements")
+        for element_digest, value in sorted(
+                found.items(), key=lambda item: (isinstance(item[1], str), item[1])):
+            print(f"      {element_digest[:24]}...  ->  {value}")
+        for element_digest in (d for d in digests if d not in recovered):
+            print(f"      {element_digest[:24]}...  ->  NOT FOUND in this range")
+    print()
+
+    remaining = targets - set(recovered)
+    if remaining:
+        print(f"  Phase 2: {len(remaining)} digest(s) survived phase 1. These are")
+        print("           consistent with a student number. A student number is")
+        print("           NOT secret and follows a published format, so the")
+        print("           Server can search that domain too.")
+        if args.id_prefix is not None:
+            space = 10 ** args.id_width
+            prefix, width = args.id_prefix, args.id_width
+            print(f"           Searching {prefix}{'0' * width}..{prefix}{'9' * width} "
+                  f"({space:,} candidates).")
+            # Candidates are generated as strings so that a student number with
+            # a letter prefix is covered as easily as a purely numeric one.
+            started = time.perf_counter()
+            found, tried = brute_force(
+                remaining, (f"{prefix}{i:0{width}d}" for i in range(space)))
+            elapsed = time.perf_counter() - started
+            print(f"           {tried:,} candidates hashed in {elapsed:.2f}s")
+            for element_digest, value in found.items():
+                print(f"      {element_digest[:24]}...  ->  {value}"
+                      "   <-- STUDENT NUMBER RECOVERED")
+            recovered.update(found)
+            remaining = targets - set(recovered)
+        full_space = 10 ** STUDENT_NUMBER_DIGITS
+        print("           Even with no hint at all, the whole 9-digit space is")
+        print(f"           {full_space:,} candidates: about "
+              f"{full_space / rate / 3600:.1f} hours in this unoptimised Python,")
+        print("           and seconds on a GPU. The domain, not the hash, is the")
+        print("           weakness.")
+    print()
+    print(f"  RESULT: {len(recovered)}/{len(targets)} distinct digests inverted.")
+    if remaining:
+        print(f"          {len(remaining)} digest(s) still unknown "
+              "(outside the ranges searched here).")
+
+
+if __name__ == "__main__":
+    main()
+```
+
+## A.6 `psi/run_experiments.py`
+
+```python
+"""Question A.4: runs the whole of Part A and writes the outputs to results/.
+
+    RUN 1   the sets given in the question
+    RUN 2   Client 2's set modified so the intersection changes
+    RUN 3   the sets of Run 1 with the keyed blinding of A.5
+    ATTACK  the Server brute-forcing the Run 1 and Run 3 digests
+
+Starts the Server itself unless one is already listening.
+
+    python3 psi/run_experiments.py --student-id 260452597
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import subprocess
+import sys
+import threading
+import time
+import urllib.error
+import urllib.request
+from pathlib import Path
+from typing import Any
+
+from client import Element, run_client
+
+HERE = Path(__file__).resolve().parent
+RESULTS = HERE.parent / "results"
+DEFAULT_PORT = 8214
+STARTUP_ATTEMPTS = 50
+STARTUP_DELAY_SECONDS = 0.1
+
+
+class Tee:
+    """Mirror stdout into a transcript file."""
+
+    def __init__(self, stream: Any, path: Path) -> None:
+        self.stream = stream
+        self.file = path.open("w", encoding="utf-8")
+
+    def write(self, data: str) -> int:
+        self.stream.write(data)
+        self.file.write(data)
+        return len(data)
+
+    def flush(self) -> None:
+        self.stream.flush()
+        self.file.flush()
+
+    def close(self) -> None:
+        self.file.close()
+
+
+def server_is_up(server: str) -> bool:
+    try:
+        with urllib.request.urlopen(f"{server}/health", timeout=1) as response:
+            return response.status == 200
+    except (urllib.error.URLError, OSError):
+        return False
+
+
+def start_server(server: str, port: int) -> subprocess.Popen[str] | None:
+    if server_is_up(server):
+        print(f"[runner] a Server is already listening on {server}")
+        return None
+    print(f"[runner] starting the Server on port {port} ...")
+    process = subprocess.Popen(
+        [sys.executable, str(HERE / "server.py"), "--port", str(port)],
+        stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    for _ in range(STARTUP_ATTEMPTS):
+        if server_is_up(server):
+            print(f"[runner] Server is up on {server}")
+            return process
+        time.sleep(STARTUP_DELAY_SECONDS)
+    process.terminate()
+    raise SystemExit("the Server failed to start")
+
+
+def post(server: str, path: str, payload: dict[str, Any]) -> dict[str, Any]:
+    request = urllib.request.Request(
+        f"{server}{path}", data=json.dumps(payload).encode(),
+        headers={"Content-Type": "application/json"}, method="POST")
+    with urllib.request.urlopen(request, timeout=10) as response:
+        return json.loads(response.read())
+
+
+def get(server: str, path: str) -> dict[str, Any]:
+    with urllib.request.urlopen(f"{server}{path}", timeout=10) as response:
+        return json.loads(response.read())
+
+
+def banner(title: str) -> None:
+    print(f"\n{'=' * 74}\n{title}\n{'=' * 74}")
+
+
+def run_session(server: str, session: str, mode: str,
+                set1: list[Element], set2: list[Element]) -> dict[str, Any]:
+    """Run both clients concurrently, as two independent parties."""
+    results: dict[str, Any] = {}
+    errors: list[BaseException] = []
+
+    def worker(client_id: str, elements: list[Element]) -> None:
+        try:
+            results[client_id] = run_client(client_id, elements, mode, session, server)
+        except BaseException as exc:  # re-raised in the main thread below
+            errors.append(exc)
+
+    threads = [threading.Thread(target=worker, args=args)
+               for args in (("client1", set1), ("client2", set2))]
+    for thread in threads:
+        thread.start()
+    for thread in threads:
+        thread.join()
+    if errors:
+        raise errors[0]
+    return results
+
+
+def print_server_view(server: str, session: str) -> list[dict[str, Any]]:
+    """Print exactly what the Server received and sent for one session."""
+    log = [m for m in get(server, "/log")["messages"] if m["session"] == session]
+    print(f"\n--- MESSAGES AT THE SERVER for session {session!r} "
+          "(this is the Server's ENTIRE view) ---")
+    for message in log:
+        arrow = "<--" if message["direction"] == "received" else "-->"
+        print(f"  [{message['seq']:>2}] {message['time']}  "
+              f"Server {arrow} {message['peer']:<12} {message['message']}")
+        payload = message["payload"]
+        if message["message"] == "BLINDED_SET":
+            print(f"        mode={payload['mode']}  count={payload['count']}")
+        elif message["message"] == "INTERSECTION":
+            print(f"        count={payload['count']}")
+        else:
+            print(f"        {payload}")
+            continue
+        for element_digest in payload["digests"]:
+            print(f"          {element_digest}")
+    print("  NOTE: no raw set element appears anywhere above.")
+    return log
+
+
+def parse_student_id(raw: str) -> Element:
+    """Keep the ID numeric when it is, but tolerate a letter prefix."""
+    value = raw.strip()
+    return int(value) if value.lstrip("-").isdigit() else value
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="CSC8214 Part A experiment runner")
+    parser.add_argument("--student-id",
+                        default=os.environ.get("CSC8214_STUDENT_ID", "260452597"))
+    parser.add_argument("--port", type=int, default=DEFAULT_PORT)
+    parser.add_argument("--server", default=None)
+    args = parser.parse_args()
+
+    server = args.server or f"http://127.0.0.1:{args.port}"
+    student_id = parse_student_id(args.student_id)
+
+    RESULTS.mkdir(exist_ok=True)
+    tee = Tee(sys.stdout, RESULTS / "transcript.txt")
+    sys.stdout = tee
+
+    process = None
+    try:
+        process = start_server(server, args.port)
+        post(server, "/reset", {})
+
+        set1: list[Element] = [1, 2, 5, 9, student_id]
+        set2: list[Element] = [5, 8, 11, student_id]
+        # A.4(ii): 5 removed and 2 added, so the intersection must change.
+        set2_modified: list[Element] = [2, 8, 11, student_id]
+
+        runs = [
+            ("run1", "plain", set1, set2,
+             "RUN 1 (A.4 i) - the sets given in the question, plain SHA-256",
+             [f"  Client 1 set: {{1, 2, 5, 9, ID}}  with ID = {student_id}",
+              f"  Client 2 set: {{5, 8, 11, ID}}    with ID = {student_id}",
+              f"  Expected intersection: {{5, {student_id}}}"]),
+            ("run2", "plain", set1, set2_modified,
+             "RUN 2 (A.4 ii) - Client 2's set modified, plain SHA-256",
+             ["  Client 1 set: {1, 2, 5, 9, ID}  (unchanged)",
+              "  Client 2 set: {2, 8, 11, ID}    (5 removed, 2 added)",
+              f"  Expected intersection: {{2, {student_id}}}"]),
+            ("run3", "hmac", set1, set2,
+             "RUN 3 (A.5 improvement) - same sets as Run 1, keyed HMAC-SHA256",
+             ["  The two clients first agree a key by Diffie-Hellman, relayed by",
+              "  the Server. The Server sees g^a and g^b but cannot derive g^ab."]),
+        ]
+
+        all_results: dict[str, Any] = {}
+        for session, mode, first, second, title, preamble in runs:
+            banner(title)
+            print("\n".join(preamble))
+            print()
+            clients = run_session(server, session, mode, first, second)
+            key = "run3_hmac" if session == "run3" else session
+            all_results[key] = {"clients": clients,
+                                "server_log": print_server_view(server, session)}
+
+        # The Server is assumed to know all but the last five characters of a
+        # student number, which is not a secret in the first place.
+        id_prefix = str(student_id)[:-5]
+        for session in ("run1", "run3"):
+            print()
+            attack = subprocess.run(
+                [sys.executable, str(HERE / "attack_bruteforce.py"),
+                 "--server", server, "--session", session,
+                 "--id-prefix", id_prefix, "--id-width", "5"],
+                capture_output=True, text=True, cwd=str(HERE), check=False)
+            print(attack.stdout, end="")
+            if attack.stderr:
+                print(attack.stderr, end="", file=sys.stderr)
+
+        banner("SUMMARY")
+        for name, payload in all_results.items():
+            first = payload["clients"]["client1"]["intersection"]
+            second = payload["clients"]["client2"]["intersection"]
+            print(f"  {name:<10} client1 output = {first}")
+            print(f"  {'':<10} client2 output = {second}")
+            print(f"  {'':<10} both clients agree: {first == second}")
+
+        (RESULTS / "results.json").write_text(
+            json.dumps(all_results, indent=2, default=str), encoding="utf-8")
+        (RESULTS / "server_log_full.json").write_text(
+            json.dumps(get(server, "/log"), indent=2), encoding="utf-8")
+        print()
+        for name in ("results.json", "server_log_full.json", "transcript.txt"):
+            print(f"  Written: results/{name}")
+    finally:
+        sys.stdout = tee.stream
+        tee.close()
+        if process is not None:
+            process.terminate()
+            try:
+                process.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                process.kill()
+            print("[runner] Server stopped")
+
+
+if __name__ == "__main__":
+    main()
+```
+
+## A.7 `contracts/ReentrantBeneficiary.sol`
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+import "./Crowdfunding.sol";
+
+/// @notice Test-only beneficiary that re-enters withdraw() while being paid.
+/// @dev The try/catch swallows the expected AlreadyWithdrawn revert so that the
+///      outer payment still succeeds and the test can assert on the outcome.
+contract ReentrantBeneficiary {
+    Crowdfunding public campaign;
+    uint256 public reentryAttempts;
+    bool public reentrySucceeded;
+    uint256 public amountReceived;
+
+    function setCampaign(Crowdfunding _campaign) external {
+        campaign = _campaign;
+    }
+
+    receive() external payable {
+        amountReceived += msg.value;
+        if (address(campaign) != address(0) && reentryAttempts == 0) {
+            reentryAttempts += 1;
+            try campaign.withdraw() {
+                reentrySucceeded = true;
+            } catch {
+                reentrySucceeded = false;
+            }
+        }
+    }
+
+    function sweep(address payable to) external {
+        to.transfer(address(this).balance);
+    }
+}
+```
+
+## A.8 `scripts/lab1_task3_attack.py`
+
+```python
+"""Question C.2: the dictionary attack from Lab 1, Task 3.
+
+Task 3 replaces encryption with a bare hash, cipher = SHA256(plaintext), and
+supplies a ciphertext X together with a list of candidate passwords. Because
+the transformation is unkeyed, deterministic and the candidate list is tiny,
+the plaintext is recovered by hashing each candidate and comparing.
+
+    python3 scripts/lab1_task3_attack.py
+"""
+
+from __future__ import annotations
+
+import hashlib
+
+X = "872715f9eb56b72a64f8f19b6297d54931d26bbc4923ccdd4354059a61dae80b"
+CANDIDATES = ["11211223", "Password", "1989-Newcastle", "02.10.1999"]
+
+
+def sha256_hex(text: str) -> str:
+    """The lab's own construction: SHA-256 over the UTF-8 bytes, as hex."""
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def main() -> None:
+    print(f"X = {X}\n")
+    print(f"{'candidate':<16} {'SHA-256(candidate)':<64}")
+    print("-" * 82)
+
+    recovered, tried = None, 0
+    for candidate in CANDIDATES:
+        tried += 1
+        digest = sha256_hex(candidate)
+        marker = "  <== MATCH" if digest == X else ""
+        print(f"{candidate:<16} {digest:<64}{marker}")
+        if digest == X:
+            recovered = candidate
+            break
+
+    print("-" * 82)
+    if recovered is None:
+        print("no candidate matched X")
+    else:
+        print(f"plaintext Y = {recovered!r}, found after {tried} of "
+              f"{len(CANDIDATES)} hashes")
+
+
+if __name__ == "__main__":
+    main()
 ```

@@ -1,7 +1,7 @@
 // CSC8214 - Hardhat configuration used to compile and test Crowdfunding.sol.
-// The contract itself was written and tested in the Remix online IDE
-// (https://remix.ethereum.org) as used in the lab; this local setup simply
-// reproduces those tests in a form that can be re-run from the command line.
+// The contract is written to compile in the Remix online IDE
+// (https://remix.ethereum.org) used in the lab; this local setup runs the
+// same tests from the command line.
 require("@nomicfoundation/hardhat-ethers");
 
 module.exports = {

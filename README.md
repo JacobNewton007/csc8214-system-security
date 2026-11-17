@@ -1,4 +1,4 @@
-# CSC8214 System Security — Assignment
+# CSC8214 System Security: Assignment
 
 The report to submit is **[report/CSC8214-Report.docx](report/CSC8214-Report.docx)** (Word, for
 Canvas) or **[report/CSC8214-Report.md](report/CSC8214-Report.md)** (Markdown).
@@ -10,7 +10,7 @@ python3 scripts/build_report.py && npm run docx
 ```
 
 `build_report.py` inlines the source files and captured outputs into the Markdown;
-`scripts/md_to_docx.js` converts that to Word. Never edit the two built files directly — they
+`scripts/md_to_docx.js` converts that to Word. Never edit the two built files directly, as they
 are overwritten.
 
 ## Before anything else
@@ -24,7 +24,7 @@ python3 psi/run_experiments.py --student-id 260452597
 Then update the student number at the top of the report and the digests quoted in
 sections A.4 and A.5 from the freshly written `results/transcript.txt`.
 
-## Part A — Private Set Intersection
+## Part A: Private Set Intersection
 
 | File | Role |
 |---|---|
@@ -34,7 +34,7 @@ sections A.4 and A.5 from the freshly written `results/transcript.txt`.
 | `psi/run_experiments.py` | starts the Server and runs Runs 1–3 plus both attacks |
 | `psi/attack_bruteforce.py` | the Server trying to invert the digests it received (A.5) |
 
-Everything is standard-library Python 3 — no `pip install` needed.
+Everything is standard-library Python 3, so no `pip install` is needed.
 
 ### Run everything at once (starts the Server for you)
 
@@ -69,7 +69,7 @@ the Server collected:
 python3 psi/attack_bruteforce.py --session run1 --id-prefix 2604 --id-width 5
 ```
 
-## Part B — Crowdfunding smart contract
+## Part B: Crowdfunding smart contract
 
 | File | Role |
 |---|---|
@@ -77,8 +77,8 @@ python3 psi/attack_bruteforce.py --session run1 --id-prefix 2604 --id-width 5
 | `contracts/ReentrantBeneficiary.sol` | hostile beneficiary used to test the reentrancy defence |
 | `scripts/test_crowdfunding.js` | 33 functional tests |
 
-The contract is written for the Remix IDE (`https://remix.ethereum.org`) used in the lab —
-paste `Crowdfunding.sol` in, compile with 0.8.26, and deploy on the JavaScript VM. The same
+The contract is written for the Remix IDE (`https://remix.ethereum.org`) used in the lab.
+Paste `Crowdfunding.sol` in, compile with 0.8.26, and deploy on the JavaScript VM. The same
 tests also run locally on Hardhat:
 
 ```bash
@@ -91,7 +91,7 @@ npx hardhat run scripts/test_crowdfunding.js
 
 Last run: **33 passed, 0 failed** (`results/crowdfunding_tests.txt`).
 
-## Part C — Lab 1 Task 3
+## Part C: Lab 1 Task 3
 
 `scripts/lab1_task3_attack.py` reproduces the dictionary attack discussed in C.2: it hashes each
 candidate password from Lab 1 Task 3 and compares against the given ciphertext `X`.

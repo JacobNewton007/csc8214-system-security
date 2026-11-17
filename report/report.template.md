@@ -29,9 +29,9 @@ protocols divide further into **one-off delegation**, where the owners re-encode
 each computation, and **repeated delegation**, where one outsourcing supports any number of
 later intersections. A.3's protocol is a delegated PSI with one-off delegation.
 
-Security is stated against an adversary type. A **passive** (semi-honest) adversary is the
+Security is stated against an adversary type. A passive (semi-honest) adversary is the
 weakest: it follows the protocol but is curious, so a PSI secure against it need only satisfy
-privacy. An **active** (malicious) adversary is the strongest: it may deviate from the
+privacy. An active (malicious) adversary is the strongest: it may deviate from the
 protocol's instructions, so the PSI must additionally guarantee the result's correctness, in
 the sense that deviation producing an incorrect result is detected. Common building blocks are
 hash functions, pseudorandom functions (PRFs), homomorphic encryption and polynomial
@@ -39,9 +39,10 @@ representations for security, and hash tables and Bloom filters for efficiency.
 
 ## A.2 Application
 
-A real-world application is **Apple's proposed system to combat Child Sexual Abuse Material**
+A real-world application is Apple's proposed system to combat Child Sexual Abuse Material
 (2021), which used PSI to check images on a user's device against a database of known illegal
 images held by child-protection organisations.
+The design is described by Bhowmick et al., *The Apple PSI System* (2021), covered in Lecture 4.
 
 Plain data sharing fails in both directions. Uploading every user photo for checking would
 concentrate the private photo library of every customer on one company's servers: a permanent
@@ -59,8 +60,8 @@ revealed until a set number of matches had accumulated, limiting the damage from
 positive.
 
 The example also shows PSI's limit. The protocol can guarantee that only the intersection is
-revealed; it cannot decide whether computing that intersection is legitimate. The scheme was
-withdrawn in 2022 after sustained criticism that the same machinery, once deployed, could be
+revealed; it cannot decide whether computing that intersection is legitimate. Apple later dropped
+the plan, in 2022, after sustained criticism that the same machinery, once deployed, could be
 repointed at any other database. Cryptography constrained what was learned, not what could
 later be asked.
 
@@ -71,7 +72,7 @@ later be asked.
 **delegated PSI** with one-off delegation: the clients encode their sets, the Server compares
 them, and both clients learn `X₁ ∩ X₂` without sending any raw element.
 
-**Threat model.** The Server is **passive (semi-honest)**: it follows the protocol but is
+**Threat model.** The Server is passive (semi-honest): it follows the protocol but is
 curious. The protocol therefore aims at privacy only, not at detecting deviation.
 
 **Primitive.** A cryptographic hash function `H = SHA-256`, with a fixed domain-separation tag
@@ -92,17 +93,13 @@ come out empty.
 1. **Blinding (each client, locally).** Client *i* hashes every element of its set and keeps a
    private lookup table `Tᵢ : digest ↦ element`. The table never leaves the client and is the
    only thing that can invert a digest.
-2. **Submission.** Each client sends only the digests, in **shuffled** order. Shuffling matters:
+2. **Submission.** Each client sends only the digests, in shuffled order. Shuffling matters:
    in set order, a digest's position would leak the ordering of the underlying elements.
 3. **Intersection (Server).** The Server, holding no set of its own, computes `I = D₁ ∩ D₂` and
    returns `I` to both clients.
 4. **Recovery (each client, locally).** Client *i* maps each digest in `I` back through `Tᵢ`.
    Because `H` is deterministic, a shared element yields an identical digest at both clients, so
    `I` holds exactly the digests of `X₁ ∩ X₂` and each client recovers it.
-
-A.5 adds an optional **Step 0**, in which the clients agree a secret key before Step 1 and
-replace `H` with a keyed function. The four steps are otherwise unchanged, and the code comments
-are numbered to match.
 
 **Why no element reaches the Server.** The Server receives only 256-bit digests and returns a
 subset of what it was given. A digest cannot be inverted by computation alone, only by guessing
@@ -172,10 +169,10 @@ is returned again, and it is the same digest string as in Run 1.
 ### What the Server can learn from the messages in A.4
 
 Although no element is sent in the clear, the Server's view is not empty. It directly learns the
-**cardinality** of each set (5 and 4), the **size of the intersection** (2), and, because
-digests are deterministic and unkeyed, **which digests the two clients share** and which are
+cardinality of each set (5 and 4), the size of the intersection (2), and, because
+digests are deterministic and unkeyed, which digests the two clients share and which are
 unique to one of them. Across sessions it learns more: digest `7171a8e2…` appears in Run 1, Run
-2 and in both clients' sets, so the Server can **link** the same element across runs and across
+2 and in both clients' sets, so the Server can link the same element across runs and across
 clients without yet knowing what it is.
 
 ### Could the Server recover elements by hashing candidate values? Yes.
@@ -218,13 +215,13 @@ element of both sets was recovered in well under a second. Even without the pref
 Phase 2, the whole nine-digit space is 10⁹ candidates, which at the 1.33 million hashes/second
 measured here is about 0.2 hours on one unoptimised Python thread. Optimised or parallel
 implementations would be faster, but this experiment did not measure them, so the figure that
-the evidence supports is the single-thread one, and it is already far too low. **The protocol
-of A.3 protects the elements from a network eavesdropper but not from the Server.**
+the evidence supports is the single-thread one, and it is already far too low. The protocol
+of A.3 protects the elements from a network eavesdropper but not from the Server.
 
 ### One possible improvement, and its limitations
 
-**Improvement: blind with a pseudorandom function keyed by a secret the two clients share,
-rather than with an unkeyed hash.** In Step 0 the clients run a Diffie–Hellman exchange, relayed
+Improvement: blind with a pseudorandom function keyed by a secret the two clients share,
+rather than with an unkeyed hash. In Step 0 the clients run a Diffie–Hellman exchange, relayed
 by the Server, and derive `k = KDF(g^{ab})`. They then send `HMAC-SHA256(k, T‖x)`, a PRF keyed
 by `k` and one of the standard PSI building blocks, instead of `SHA-256(T‖x)`. Equality
 still holds for equal elements, so the Server's intersection step is unchanged, but it can no
@@ -275,7 +272,7 @@ consensus on the new state. We can therefore treat a contract as being executed 
 global machine that honestly performs every instruction, even though no individual machine is
 trusted.
 
-The effect is to **minimise trust**, and often operating costs: the parties need not trust one
+The effect is to minimise trust, and often operating costs: the parties need not trust one
 another, nor an intermediary to hold the money or decide whether to honour the agreement. A
 contract is passive: it cannot invoke itself, and acts only when an account calls it. Changing
 its state requires a new transaction published to the network.
@@ -285,9 +282,9 @@ and contracts usually have no private state, which buys transparency at the cost
 
 ## B.2 Comparison and development environment
 
-**The online compiler used in the lab is Remix (`remix.ethereum.org`)**, a browser-based IDE to
+The online compiler used in the lab is Remix (`remix.ethereum.org`), a browser-based IDE to
 write, compile and debug Solidity contracts, with a built-in test chain (set the Environment
-option to the JavaScript VM, which current versions of Remix label the **Remix VM**) so that
+option to the JavaScript VM, which current versions of Remix label the Remix VM) so that
 contracts can be deployed and called without spending real ether.
 
 | | Traditional contract | Smart contract |
@@ -304,9 +301,7 @@ contracts can be deployed and called without spending real ether.
 The deepest difference is that a traditional contract states *intent* and leaves enforcement to
 a system that can apply judgement, whereas a smart contract *is* the enforcement and has no
 judgement at all. A traditional contract with a typo in a payment clause will usually be
-rectified; a smart contract with the same typo pays the wrong amount every time. Deployed
-bytecode cannot be edited, although upgradeable proxy patterns reach new logic through a fixed
-address, at the cost of reintroducing a party who can change the rules.
+rectified; a smart contract with the same typo pays the wrong amount every time.
 
 A second difference is scope. A smart contract acts only on facts it can see on-chain, so
 anything about the physical world must come from a trusted oracle, which reintroduces the
@@ -339,7 +334,7 @@ used, as it can be phished through an intermediate contract.
 **Reentrancy.** When the contract sends Ether with `call`, the recipient's code runs *before*
 the sending function finishes. If it calls back in while the state still says the funds are
 unspent, the guard passes twice, which is how The DAO was drained in 2016. The defence is
-**checks-effects-interactions**: validate, write state, call out last. In B.4
+checks-effects-interactions: validate, write state, call out last. In B.4
 `withdrawn = true` executes before the `call`, so a re-entrant call reverts.
 
 **Checking the return value.** `call` reports failure by returning `false`, so an unchecked
@@ -368,7 +363,7 @@ Full source, `contracts/Crowdfunding.sol`:
 restricted anyway so that the beneficiary controls the *timing* of the payout, rather than
 having a stranger trigger the transfer at an arbitrary moment.
 
-### Withdrawal **before** the target is reached
+### Withdrawal before the target is reached
 
 `withdraw()` checks the caller is the beneficiary, then reaches
 `if (totalRaised < target) revert TargetNotReached(totalRaised, target);`. The revert rolls the
@@ -376,9 +371,9 @@ whole transaction back atomically: no state changes, no Ether moves, `withdrawn`
 and the only cost is gas. The error carries both figures, so a wallet can show how much is still
 missing. Contributions are therefore safe in the contract until the target is genuinely met.
 
-### Withdrawal **after** the funds have already been withdrawn
+### Withdrawal after the funds have already been withdrawn
 
-The first successful `withdraw()` sets `withdrawn = true` **before** sending anything, so a
+The first successful `withdraw()` sets `withdrawn = true` before sending anything, so a
 second call reverts with `AlreadyWithdrawn` and nothing moves. The ordering is what matters:
 because the flag is written before the external call, even a beneficiary contract that re-enters
 `withdraw()` from its `receive()` function meets the same closed latch, so the funds can leave
@@ -393,7 +388,7 @@ could never be released, so `contribute()` rejects contributions once `withdrawn
 
 ### Test results
 
-`npx hardhat run scripts/test_crowdfunding.js` gives **33 passed, 0 failed**. Full output:
+`npx hardhat run scripts/test_crowdfunding.js` gives 33 passed, 0 failed. Full output:
 
 <<<INCLUDE:results/crowdfunding_tests.txt:text>>>
 
@@ -434,8 +429,8 @@ the code harder to audit.
 
 ## C.1 Hashing and encryption
 
-**No. A hash function must not be used to encrypt sensitive information, because hashing is not
-encryption.** An encryption scheme uses a key: `Encrypt_k(m) = C`, and the secret key allows the
+No. A hash function must not be used to encrypt sensitive information, because hashing is not
+encryption. An encryption scheme uses a key: `Encrypt_k(m) = C`, and the secret key allows the
 ciphertext to be decrypted and the original plaintext recovered. A cryptographic hash is a
 deterministic, keyless, one-way function that takes an input of arbitrary size and returns a
 fixed-size digest, and which is practically infeasible to invert. There is no decryption
@@ -490,9 +485,7 @@ merely plausibly.
 SHA-256's strength was never the issue; it was used exactly as designed, for a job it was not
 designed for. The fixes follow from the three properties: use an authenticated cipher under a
 key when the message must be recoverable, and store passwords under a slow, salted KDF such as
-Argon2id, whose per-record salt destroys the fingerprint. The lab's closing question, whether a
-hash can encrypt such that you can later decrypt, answers itself: a one-way function has no
-inverse.
+Argon2id, whose per-record salt destroys the fingerprint.
 
 ---
 
@@ -521,15 +514,14 @@ membership inference can reveal whether a person's record was used, which in a h
 discloses that they were a patient.
 
 The usual mitigations are secure aggregation, which hides individual updates from the server,
-and differential privacy, which bounds any one record's influence. **With two participants
-secure aggregation gives little protection against the other hospital**: A knows its own update,
+and differential privacy, which bounds any one record's influence. With two participants
+secure aggregation gives little protection against the other hospital: A knows its own update,
 so subtracting it from the aggregate recovers B's exactly. Here differential privacy carries
 most of the weight, at a cost in accuracy.
 
 ## D.2 Privacy-preserving data cleaning
 
-The method studied is **secure mean imputation using secure aggregation**, which replaces
-pooling with protected totals.
+The method studied is **secure mean imputation using secure aggregation**.
 
 **The plaintext baseline.** Writing `mᵢ = 1` when a value is observed, a central server pools
 the records and computes `μ = Σᵢ xᵢmᵢ / Σᵢ mᵢ`, which requires receiving every record.
@@ -538,8 +530,8 @@ the records and computes `μ = Σᵢ xᵢmᵢ / Σᵢ mᵢ`, which requires rece
 `sₖ = Σᵢ xₖᵢ mₖᵢ`, the sum of the values it observed, and `nₖ = Σᵢ mₖᵢ`, how many it observed.
 Only those protected totals leave the site. Under secure aggregation the coordinator obtains
 `S = Σₖ sₖ` and `N = Σₖ nₖ` without seeing either contribution, computes `μ = S / N` and returns
-it; each hospital fills its own gaps locally with `μ`. Secure aggregation matches the additive
-part exactly, so the imputed value is the same; the coordinator never sees a record.
+it; each hospital fills its own gaps locally with `μ`. The imputed value is the same
+as with pooling, and the coordinator never sees a record.
 
 **Worked example.** Hospital A observes 80, 100 and 120, so `s_A = 300`, `n_A = 3`. Hospital B
 observes 90 and 110, so `s_B = 200`, `n_B = 2`. Then `S = 500`, `N = 5`, `μ = 100`.
@@ -549,9 +541,9 @@ record, becomes a new data controller and a single point of failure, and sees th
 irrelevant to the imputation. Here it sees two totals, and records never leave the hospital.
 
 **Limitations.** The aggregate itself is still revealed, and secure aggregation supports only
-counts, sums and means. A median needs secure ordering, and regression or k-nearest-neighbour
-imputation needs full MPC, which is markedly more expensive. More sharply, **with two hospitals
-the aggregate leaks**: knowing `μ` and `N`, Hospital A computes `S − s_A = s_B` and
+counts, sums and means. Medians and regression
+imputation need heavier MPC. More sharply, with two hospitals
+the aggregate leaks: knowing `μ` and `N`, Hospital A computes `S − s_A = s_B` and
 `N − n_A = n_B`, learning B's sum, count and local mean exactly. Secure aggregation protects
 against the coordinator here, not against the only other participant.
 
@@ -574,3 +566,19 @@ against the coordinator here, not against the only other participant.
 ## A.4 `scripts/test_crowdfunding.js`
 
 <<<INCLUDE:scripts/test_crowdfunding.js:javascript>>>
+
+## A.5 `psi/attack_bruteforce.py`
+
+<<<INCLUDE:psi/attack_bruteforce.py:python>>>
+
+## A.6 `psi/run_experiments.py`
+
+<<<INCLUDE:psi/run_experiments.py:python>>>
+
+## A.7 `contracts/ReentrantBeneficiary.sol`
+
+<<<INCLUDE:contracts/ReentrantBeneficiary.sol:solidity>>>
+
+## A.8 `scripts/lab1_task3_attack.py`
+
+<<<INCLUDE:scripts/lab1_task3_attack.py:python>>>
