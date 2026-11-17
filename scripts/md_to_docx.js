@@ -48,7 +48,7 @@ function inlineRuns(text, base = {}) {
     } else if (token.startsWith("`")) {
       runs.push(new TextRun({
         text: token.slice(1, -1), font: MONO_FONT,
-        size: (base.size || 22) - 2, ...base,
+        size: (base.size || 22) - 1, ...base,
       }));
     } else {
       runs.push(new TextRun({ text: token.slice(1, -1), italics: true, ...base }));
@@ -65,11 +65,19 @@ function inlineRuns(text, base = {}) {
 // Block builders
 // ---------------------------------------------------------------------------
 
-const codeLine = (line) => new Paragraph({
-  children: [new TextRun({ text: line || " ", font: MONO_FONT, size: 16 })],
-  spacing: { before: 0, after: 0, line: 240 },
-  shading: { type: ShadingType.CLEAR, fill: "F4F4F4" },
-});
+// A listing short enough to fit one A4 page is held together with keepNext, so
+// it is not split across a page break. Longer ones (the appendix sources) must
+// be allowed to flow, or they would just push a blank page ahead of themselves.
+const PAGE_LINES = 44;
+
+const codeLine = (line, { first = false, last = false, keep = false } = {}) =>
+  new Paragraph({
+    children: [new TextRun({ text: line || " ", font: MONO_FONT, size: 16 })],
+    spacing: { before: first ? 100 : 0, after: last ? 180 : 0, line: 240 },
+    shading: { type: ShadingType.CLEAR, fill: "F4F4F4" },
+    keepLines: true,
+    keepNext: keep && !last,
+  });
 
 const horizontalRule = () => new Paragraph({
   text: "",
@@ -145,7 +153,8 @@ function parse(markdown) {
     blocks.push(new Paragraph({
       children: inlineRuns(paragraph.join(" ")),
       spacing: { before: 0, after: 140, line: 276 },
-      alignment: AlignmentType.JUSTIFIED,
+      alignment: AlignmentType.LEFT,
+      keepLines: true,
     }));
     paragraph = [];
   };
@@ -162,9 +171,10 @@ function parse(markdown) {
         body.push(lines[i]);
         i += 1;
       }
-      blocks.push(new Paragraph({ text: "", spacing: { before: 60, after: 0 } }));
-      body.forEach((l) => blocks.push(codeLine(l)));
-      blocks.push(new Paragraph({ text: "", spacing: { before: 0, after: 140 } }));
+      const keep = body.length <= PAGE_LINES;
+      body.forEach((l, n) => blocks.push(codeLine(l, {
+        first: n === 0, last: n === body.length - 1, keep,
+      })));
       continue;
     }
 

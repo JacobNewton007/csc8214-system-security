@@ -12,24 +12,24 @@ All outputs quoted below were produced by `python3 psi/run_experiments.py` and
 
 ## A.1 Concept
 
-Private Set Intersection (PSI) is a cryptographic protocol that lets mutually distrustful
-parties compute the intersection of their private sets such that nothing about the sets'
-elements, beyond the result, is revealed. If Alice holds `{1, 2, 3}` and Bob holds
-`{1, 3, 4, 5, 9}`, both may learn `{1, 3}`, but during and after the computation Bob must not
-learn `2` and Alice must not learn `4`, `5` or `9`.
+Private Set Intersection (PSI) is a cryptographic protocol which, as Lecture 3 [1] puts it,
+"lets mutually distrustful parties compute the intersection of their private sets such that
+nothing about the sets' elements, beyond the result, is revealed". In its example, Alice holds
+`{1, 2, 3}` and Bob `{1, 3, 4, 5, 9}`; both may learn `{1, 3}`, but Bob must not learn `2` and
+Alice must not learn `4`, `5` or `9`.
 
 Computing an intersection would be trivial if the parties could hand their sets to a trusted
 third party. PSI is non-trivial precisely because no such party exists, and neither owner knows
 what the other holds.
 
-PSI protocols divide into two settings. In **traditional PSI** the only participants are the
+PSI protocols divide into two settings [1]. In **traditional PSI** the only participants are the
 set owners, who interactively compute the result from their local sets and repeat that work
 every time. In **delegated PSI** the owners encode their sets and send the encodings to a server, typically cloud, which performs the computation and/or storage on their behalf. Delegated
 protocols divide further into **one-off delegation**, where the owners re-encode their data for
 each computation, and **repeated delegation**, where one outsourcing supports any number of
 later intersections. A.3's protocol is a delegated PSI with one-off delegation.
 
-Security is stated against an adversary type. A passive (semi-honest) adversary is the
+Security is stated against an adversary type [1]. A passive (semi-honest) adversary is the
 weakest: it follows the protocol but is curious, so a PSI secure against it need only satisfy
 privacy. An active (malicious) adversary is the strongest: it may deviate from the
 protocol's instructions, so the PSI must additionally guarantee the result's correctness, in
@@ -40,7 +40,7 @@ representations for security, and hash tables and Bloom filters for efficiency.
 ## A.2 Application
 
 A real-world application is Apple's proposed system to combat Child Sexual Abuse Material
-(2021), which used PSI to check images on a user's device against a database of known illegal
+(2021) [10, 11], which used PSI to check images on a user's device against a database of known illegal
 images held by child-protection organisations.
 The design is described by Bhowmick et al., *The Apple PSI System* (2021), covered in Lecture 4.
 
@@ -222,7 +222,8 @@ of A.3 protects the elements from a network eavesdropper but not from the Server
 
 Improvement: blind with a pseudorandom function keyed by a secret the two clients share,
 rather than with an unkeyed hash. In Step 0 the clients run a Diffie–Hellman exchange, relayed
-by the Server, and derive `k = KDF(g^{ab})`. They then send `HMAC-SHA256(k, T‖x)`, a PRF keyed
+by the Server, and derive `k = KDF(g^{ab})` over the 2048-bit MODP group of RFC 3526 [9]. They then send
+`HMAC-SHA256(k, T‖x)`, a PRF keyed
 by `k` and one of the standard PSI building blocks, instead of `SHA-256(T‖x)`. Equality
 still holds for equal elements, so the Server's intersection step is unchanged, but it can no
 longer compute the digest of *any* candidate: it saw only `g^a` and `g^b`, and deriving `g^{ab}`
@@ -259,9 +260,10 @@ RESULT: attack fails.
 
 ## B.1 Smart contract concept
 
-A contract formalises a relationship and contains a set of promises made between principals. A
-**smart contract**, a term put forward by Nick Szabo in 1994, provides new ways to formalise and
-secure digital relationships, using cryptographic and other security mechanisms to stop
+Lecture 7 [2] defines a contract as something that formalises a relationship and contains a set
+of promises made between principals, and attributes the term
+**smart contract** to Nick Szabo in 1994: new ways to formalise and secure digital
+relationships, using cryptographic and other security mechanisms to stop
 algorithmically specifiable relationships being breached and to ensure the agreed terms are
 satisfied.
 
@@ -282,7 +284,7 @@ and contracts usually have no private state, which buys transparency at the cost
 
 ## B.2 Comparison and development environment
 
-The online compiler used in the lab is Remix (`remix.ethereum.org`), a browser-based IDE to
+The online compiler used in the lab is Remix (`remix.ethereum.org`) [2], a browser-based IDE to
 write, compile and debug Solidity contracts, with a built-in test chain (set the Environment
 option to the JavaScript VM, which current versions of Remix label the Remix VM) so that
 contracts can be deployed and called without spending real ether.
@@ -309,7 +311,7 @@ trusted third party the design set out to remove.
 
 ## B.3 Security considerations
 
-Take the lab's `Donation` contract.
+Take the lab's `Donation` contract [2].
 
 ```solidity
 pragma solidity ^0.8.20;
@@ -324,8 +326,8 @@ contract Donation {
 ```
 
 `donate()` is `payable`, so it may receive Ether, and `msg.value` is the amount sent in wei;
-without `payable` the call would revert. The security questions appear once a withdraw function
-lets the money leave again.
+without `payable` the call would revert. Security questions appear once a withdraw function lets
+the money leave.
 
 **Access control.** Any `public` function can be called by anyone, so a withdrawal path must
 check its caller. `msg.sender` is set by the EVM and cannot be forged; `tx.origin` must never be
@@ -338,18 +340,18 @@ checks-effects-interactions: validate, write state, call out last. In B.4
 `withdrawn = true` executes before the `call`, so a re-entrant call reverts.
 
 **Checking the return value.** `call` reports failure by returning `false`, so an unchecked
-result silently loses funds. B.4 checks and reverts.
+result silently loses funds; B.4 checks and reverts.
 
 **Not trusting the raw balance.** `address(this).balance` can be inflated by `selfdestruct`,
 bypassing `donate()`, so a campaign testing it could be pushed over its target with no genuine
 donation. B.4 tracks its own total.
 
-**Gas and denial of service.** Ethereum's language is Turing-complete, so a contract could make
-the miners work forever, a denial-of-service attack. Gas forces termination: each operation has
+**Gas and denial of service.** Ethereum's language is Turing-complete, so a contract could, in Lecture 7's
+phrase [2], "make the miners work forever", a denial-of-service attack. Gas forces termination: each operation has
 an explicit cost, and a transaction costs Gas Limit × Gas Price. Work growing with the number of
 contributors can exceed the limit, so each party should withdraw its own share.
 
-**Process.** The lecture's lifecycle ends implementation with: test it many times, analyse its
+**Process.** The lecture's lifecycle [2] ends implementation with: test many times, analyse
 security, let others review the code, because deployed code cannot be patched.
 
 ## B.4 Crowdfunding contract
@@ -457,7 +459,7 @@ defeats precomputed tables.
 
 ## C.2 Password recovery in Lab 1 (Task 3)
 
-Task 3 demonstrated the misuse `cipher = SHA256(plaintext)`, encryption replaced by a bare
+Task 3 [3] demonstrated the misuse `cipher = SHA256(plaintext)`, encryption replaced by a bare
 hash. We were given a ciphertext `X` and a list of four candidate passwords, and asked which had
 been "encrypted". Hashing each candidate and comparing to `X` recovers the plaintext on the
 third attempt (`scripts/lab1_task3_attack.py`):
@@ -467,8 +469,8 @@ third attempt (`scripts/lab1_task3_attack.py`):
 The plaintext was `1989-Newcastle`. Three properties made this possible, and all three had to
 hold together.
 
-**No key and no randomness.** The task states that no secret key or randomness is used to
-encrypt the message. Encryption provides confidentiality through a secret key and a random
+**No key and no randomness.** The task states that "no secret key or randomness is used to
+encrypt the message Y" [3]. Encryption provides confidentiality through a secret key and a random
 value; a hash has neither, so an attacker needs nothing before computing the transformation
 themselves. `X` was never decrypted; SHA-256 was only run forwards.
 
@@ -497,7 +499,7 @@ Argon2id, whose per-record salt destroys the fingerprint.
 does. One round has four steps: the server sends the global model parameters to both hospitals;
 each trains that copy locally for several local epochs on its own examples; each returns its
 trained parameters, training sample count and scalar metrics, never the examples; and the
-server combines the replies with **Federated Averaging (FedAvg)**, a sample-count-weighted
+server combines the replies with **Federated Averaging (FedAvg)** [4, 5], a sample-count-weighted
 average, so a hospital with more examples gets a larger share of the weight. With `nₖ`
 the number of training examples at client *k*, `w ← Σₖ (nₖ / Σⱼ nⱼ) wₖ`. If A returns 0.4 after
 training on 100 examples and B returns 0.8 on 300, the result is 0.7, not the unweighted 0.6.
@@ -508,7 +510,7 @@ pooled database to breach or subpoena, and each hospital keeps control over acce
 records while contributing to the shared model.
 
 **Privacy risk that remains.** Keeping examples local does not guarantee privacy: shared
-updates still reveal information about the data. Zhu et al. showed training examples can
+updates still reveal information about the data. Zhu et al. [6] showed training examples can
 sometimes be reconstructed from shared gradients *under their experimental conditions*, and
 membership inference can reveal whether a person's record was used, which in a hospital
 discloses that they were a patient.
@@ -521,7 +523,7 @@ most of the weight, at a cost in accuracy.
 
 ## D.2 Privacy-preserving data cleaning
 
-The method studied is **secure mean imputation using secure aggregation**.
+The method studied is **secure mean imputation using secure aggregation** [7, 8].
 
 **The plaintext baseline.** Writing `mᵢ = 1` when a value is observed, a central server pools
 the records and computes `μ = Σᵢ xᵢmᵢ / Σᵢ mᵢ`, which requires receiving every record.
@@ -549,36 +551,72 @@ against the coordinator here, not against the only other participant.
 
 ---
 
+# References
+
+[1] Abadi, A. *Private Set Intersection (PSI)*. CSC8214 System Security, Lecture 3. Newcastle
+University.
+
+[2] Abadi, A. *Smart Contracts*. CSC8214 System Security, Lecture 7. Newcastle University.
+
+[3] *CSC8214 Lab 1*, Task 3: Insecure Use of Secure Tool, Using Only Hash Function for
+Encryption. Newcastle University.
+
+[4] *Getting Started with Flower: a browser-based introduction to federated learning*. CSC8214
+Lab 3. Newcastle University.
+
+[5] McMahan, H.B., Moore, E., Ramage, D., Hampson, S., Arcas, B.A. Communication-Efficient
+Learning of Deep Networks from Decentralized Data. AISTATS, 2017. Cited as [1] in Lab 3.
+
+[6] Zhu, L., Liu, Z., Han, S. Deep Leakage from Gradients. NeurIPS, 2019. Cited as [5] in Lab 3.
+
+[7] *Secure Medical Data Cleaning*. CSC8214 System Security lecture. Newcastle University.
+
+[8] Bonawitz, K. et al. Practical Secure Aggregation for Privacy-Preserving Machine Learning.
+ACM CCS, 2017.
+
+[9] Kivinen, T., Kojo, M. *More Modular Exponential (MODP) Diffie-Hellman Groups for Internet
+Key Exchange (IKE)*. RFC 3526, IETF, 2003.
+
+[10] Bhowmick, A., Boneh, D., Myers, S., Talwar, K., Tarbe, K. *The Apple PSI System*. 2021.
+https://www.apple.com/child-safety/pdf/Apple_PSI_System_Security_Protocol_and_Analysis.pdf
+
+[11] *Security Threat Model Review of Apple's Child Safety Features*. Apple, 2021.
+
+[12] Jentsch, D., Ünal, A.B., Mağara, G., Akgün, M. Secure multiparty computation for missing
+value imputation. arXiv:2405.18878, 2024. Cited in [7].
+
+---
+
 # Appendix A: Source code
 
-## A.1 `psi/common.py`
+## Listing 1: `psi/common.py`
 
 <<<INCLUDE:psi/common.py:python>>>
 
-## A.2 `psi/server.py`
+## Listing 2: `psi/server.py`
 
 <<<INCLUDE:psi/server.py:python>>>
 
-## A.3 `psi/client.py`
+## Listing 3: `psi/client.py`
 
 <<<INCLUDE:psi/client.py:python>>>
 
-## A.4 `scripts/test_crowdfunding.js`
+## Listing 4: `scripts/test_crowdfunding.js`
 
 <<<INCLUDE:scripts/test_crowdfunding.js:javascript>>>
 
-## A.5 `psi/attack_bruteforce.py`
+## Listing 5: `psi/attack_bruteforce.py`
 
 <<<INCLUDE:psi/attack_bruteforce.py:python>>>
 
-## A.6 `psi/run_experiments.py`
+## Listing 6: `psi/run_experiments.py`
 
 <<<INCLUDE:psi/run_experiments.py:python>>>
 
-## A.7 `contracts/ReentrantBeneficiary.sol`
+## Listing 7: `contracts/ReentrantBeneficiary.sol`
 
 <<<INCLUDE:contracts/ReentrantBeneficiary.sol:solidity>>>
 
-## A.8 `scripts/lab1_task3_attack.py`
+## Listing 8: `scripts/lab1_task3_attack.py`
 
 <<<INCLUDE:scripts/lab1_task3_attack.py:python>>>
