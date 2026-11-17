@@ -1,8 +1,17 @@
 # CSC8214 System Security — Assignment
 
-The report to submit is **[report/CSC8214-Report.md](report/CSC8214-Report.md)**. It is generated
-from `report/report.template.md` by `python3 scripts/build_report.py`, which inlines the source
-files and captured outputs — edit the template, not the built report.
+The report to submit is **[report/CSC8214-Report.docx](report/CSC8214-Report.docx)** (Word, for
+Canvas) or **[report/CSC8214-Report.md](report/CSC8214-Report.md)** (Markdown).
+
+The build chain is: edit `report/report.template.md`, then
+
+```bash
+python3 scripts/build_report.py && npm run docx
+```
+
+`build_report.py` inlines the source files and captured outputs into the Markdown;
+`scripts/md_to_docx.js` converts that to Word. Never edit the two built files directly — they
+are overwritten.
 
 ## Before anything else
 

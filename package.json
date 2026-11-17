@@ -6,11 +6,13 @@
   "scripts": {
     "compile": "hardhat compile",
     "test": "hardhat run scripts/test_crowdfunding.js",
-    "psi": "python3 psi/run_experiments.py"
+    "psi": "python3 psi/run_experiments.py",
+    "docx": "node scripts/md_to_docx.js"
   },
   "license": "MIT",
   "devDependencies": {
     "@nomicfoundation/hardhat-ethers": "^3.0.8",
+    "docx": "^9.0.2",
     "ethers": "^6.13.4",
     "hardhat": "^2.22.17"
   }
