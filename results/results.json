@@ -1,0 +1,411 @@
+{
+  "run1": {
+    "clients": {
+      "client1": {
+        "client_id": "client1",
+        "mode": "plain",
+        "input_set": [
+          1,
+          2,
+          5,
+          9,
+          240000000
+        ],
+        "digests_sent": [
+          "ecf2de5604e9c6182e7216c895ec99794da0a8100ee978ef94492316155c67b0",
+          "443d7581c97e9580bbf394b5fdc2a4a61405bceb987c6b1e4f4b6e2ee56c6f9e",
+          "96dcfae20d4e26466b1f7dace43d95372c97aeea149dfa30d7c16f0d2261b9ee",
+          "e260cd620dacae93083601390766659bd8f9d18001c1b1f0db128f7a381362e5",
+          "99e2d08e26e0cf553853271a4d51fa24a533cc7cc262cdbdce98dd64901dddab"
+        ],
+        "lookup_table": {
+          "96dcfae20d4e26466b1f7dace43d95372c97aeea149dfa30d7c16f0d2261b9ee": "1",
+          "ecf2de5604e9c6182e7216c895ec99794da0a8100ee978ef94492316155c67b0": "2",
+          "443d7581c97e9580bbf394b5fdc2a4a61405bceb987c6b1e4f4b6e2ee56c6f9e": "5",
+          "99e2d08e26e0cf553853271a4d51fa24a533cc7cc262cdbdce98dd64901dddab": "9",
+          "e260cd620dacae93083601390766659bd8f9d18001c1b1f0db128f7a381362e5": "240000000"
+        },
+        "intersection_digests": [
+          "443d7581c97e9580bbf394b5fdc2a4a61405bceb987c6b1e4f4b6e2ee56c6f9e",
+          "e260cd620dacae93083601390766659bd8f9d18001c1b1f0db128f7a381362e5"
+        ],
+        "intersection": [
+          5,
+          240000000
+        ]
+      },
+      "client2": {
+        "client_id": "client2",
+        "mode": "plain",
+        "input_set": [
+          5,
+          8,
+          11,
+          240000000
+        ],
+        "digests_sent": [
+          "e260cd620dacae93083601390766659bd8f9d18001c1b1f0db128f7a381362e5",
+          "443d7581c97e9580bbf394b5fdc2a4a61405bceb987c6b1e4f4b6e2ee56c6f9e",
+          "d78bd3d40637d1b405728f69a29ca85976e5e7824f1033e8c46967fe01d4767f",
+          "ce21b7c354366862da6409a2087b7694374c3587843cfa0bd74e156213b05d41"
+        ],
+        "lookup_table": {
+          "443d7581c97e9580bbf394b5fdc2a4a61405bceb987c6b1e4f4b6e2ee56c6f9e": "5",
+          "ce21b7c354366862da6409a2087b7694374c3587843cfa0bd74e156213b05d41": "8",
+          "d78bd3d40637d1b405728f69a29ca85976e5e7824f1033e8c46967fe01d4767f": "11",
+          "e260cd620dacae93083601390766659bd8f9d18001c1b1f0db128f7a381362e5": "240000000"
+        },
+        "intersection_digests": [
+          "443d7581c97e9580bbf394b5fdc2a4a61405bceb987c6b1e4f4b6e2ee56c6f9e",
+          "e260cd620dacae93083601390766659bd8f9d18001c1b1f0db128f7a381362e5"
+        ],
+        "intersection": [
+          5,
+          240000000
+        ]
+      }
+    },
+    "server_log": [
+      {
+        "seq": 1,
+        "time": "10:53:25.120",
+        "session": "run1",
+        "direction": "received",
+        "peer": "client1",
+        "message": "BLINDED_SET",
+        "payload": {
+          "mode": "plain",
+          "count": 5,
+          "digests": [
+            "ecf2de5604e9c6182e7216c895ec99794da0a8100ee978ef94492316155c67b0",
+            "443d7581c97e9580bbf394b5fdc2a4a61405bceb987c6b1e4f4b6e2ee56c6f9e",
+            "96dcfae20d4e26466b1f7dace43d95372c97aeea149dfa30d7c16f0d2261b9ee",
+            "e260cd620dacae93083601390766659bd8f9d18001c1b1f0db128f7a381362e5",
+            "99e2d08e26e0cf553853271a4d51fa24a533cc7cc262cdbdce98dd64901dddab"
+          ]
+        }
+      },
+      {
+        "seq": 2,
+        "time": "10:53:25.120",
+        "session": "run1",
+        "direction": "received",
+        "peer": "client2",
+        "message": "BLINDED_SET",
+        "payload": {
+          "mode": "plain",
+          "count": 4,
+          "digests": [
+            "e260cd620dacae93083601390766659bd8f9d18001c1b1f0db128f7a381362e5",
+            "443d7581c97e9580bbf394b5fdc2a4a61405bceb987c6b1e4f4b6e2ee56c6f9e",
+            "d78bd3d40637d1b405728f69a29ca85976e5e7824f1033e8c46967fe01d4767f",
+            "ce21b7c354366862da6409a2087b7694374c3587843cfa0bd74e156213b05d41"
+          ]
+        }
+      },
+      {
+        "seq": 3,
+        "time": "10:53:25.121",
+        "session": "run1",
+        "direction": "sent",
+        "peer": "both clients",
+        "message": "INTERSECTION",
+        "payload": {
+          "count": 2,
+          "digests": [
+            "443d7581c97e9580bbf394b5fdc2a4a61405bceb987c6b1e4f4b6e2ee56c6f9e",
+            "e260cd620dacae93083601390766659bd8f9d18001c1b1f0db128f7a381362e5"
+          ]
+        }
+      }
+    ]
+  },
+  "run2": {
+    "clients": {
+      "client2": {
+        "client_id": "client2",
+        "mode": "plain",
+        "input_set": [
+          2,
+          8,
+          11,
+          240000000
+        ],
+        "digests_sent": [
+          "ecf2de5604e9c6182e7216c895ec99794da0a8100ee978ef94492316155c67b0",
+          "ce21b7c354366862da6409a2087b7694374c3587843cfa0bd74e156213b05d41",
+          "d78bd3d40637d1b405728f69a29ca85976e5e7824f1033e8c46967fe01d4767f",
+          "e260cd620dacae93083601390766659bd8f9d18001c1b1f0db128f7a381362e5"
+        ],
+        "lookup_table": {
+          "ecf2de5604e9c6182e7216c895ec99794da0a8100ee978ef94492316155c67b0": "2",
+          "ce21b7c354366862da6409a2087b7694374c3587843cfa0bd74e156213b05d41": "8",
+          "d78bd3d40637d1b405728f69a29ca85976e5e7824f1033e8c46967fe01d4767f": "11",
+          "e260cd620dacae93083601390766659bd8f9d18001c1b1f0db128f7a381362e5": "240000000"
+        },
+        "intersection_digests": [
+          "e260cd620dacae93083601390766659bd8f9d18001c1b1f0db128f7a381362e5",
+          "ecf2de5604e9c6182e7216c895ec99794da0a8100ee978ef94492316155c67b0"
+        ],
+        "intersection": [
+          2,
+          240000000
+        ]
+      },
+      "client1": {
+        "client_id": "client1",
+        "mode": "plain",
+        "input_set": [
+          1,
+          2,
+          5,
+          9,
+          240000000
+        ],
+        "digests_sent": [
+          "ecf2de5604e9c6182e7216c895ec99794da0a8100ee978ef94492316155c67b0",
+          "99e2d08e26e0cf553853271a4d51fa24a533cc7cc262cdbdce98dd64901dddab",
+          "96dcfae20d4e26466b1f7dace43d95372c97aeea149dfa30d7c16f0d2261b9ee",
+          "443d7581c97e9580bbf394b5fdc2a4a61405bceb987c6b1e4f4b6e2ee56c6f9e",
+          "e260cd620dacae93083601390766659bd8f9d18001c1b1f0db128f7a381362e5"
+        ],
+        "lookup_table": {
+          "96dcfae20d4e26466b1f7dace43d95372c97aeea149dfa30d7c16f0d2261b9ee": "1",
+          "ecf2de5604e9c6182e7216c895ec99794da0a8100ee978ef94492316155c67b0": "2",
+          "443d7581c97e9580bbf394b5fdc2a4a61405bceb987c6b1e4f4b6e2ee56c6f9e": "5",
+          "99e2d08e26e0cf553853271a4d51fa24a533cc7cc262cdbdce98dd64901dddab": "9",
+          "e260cd620dacae93083601390766659bd8f9d18001c1b1f0db128f7a381362e5": "240000000"
+        },
+        "intersection_digests": [
+          "e260cd620dacae93083601390766659bd8f9d18001c1b1f0db128f7a381362e5",
+          "ecf2de5604e9c6182e7216c895ec99794da0a8100ee978ef94492316155c67b0"
+        ],
+        "intersection": [
+          2,
+          240000000
+        ]
+      }
+    },
+    "server_log": [
+      {
+        "seq": 4,
+        "time": "10:53:25.123",
+        "session": "run2",
+        "direction": "received",
+        "peer": "client2",
+        "message": "BLINDED_SET",
+        "payload": {
+          "mode": "plain",
+          "count": 4,
+          "digests": [
+            "ecf2de5604e9c6182e7216c895ec99794da0a8100ee978ef94492316155c67b0",
+            "ce21b7c354366862da6409a2087b7694374c3587843cfa0bd74e156213b05d41",
+            "d78bd3d40637d1b405728f69a29ca85976e5e7824f1033e8c46967fe01d4767f",
+            "e260cd620dacae93083601390766659bd8f9d18001c1b1f0db128f7a381362e5"
+          ]
+        }
+      },
+      {
+        "seq": 5,
+        "time": "10:53:25.124",
+        "session": "run2",
+        "direction": "received",
+        "peer": "client1",
+        "message": "BLINDED_SET",
+        "payload": {
+          "mode": "plain",
+          "count": 5,
+          "digests": [
+            "ecf2de5604e9c6182e7216c895ec99794da0a8100ee978ef94492316155c67b0",
+            "99e2d08e26e0cf553853271a4d51fa24a533cc7cc262cdbdce98dd64901dddab",
+            "96dcfae20d4e26466b1f7dace43d95372c97aeea149dfa30d7c16f0d2261b9ee",
+            "443d7581c97e9580bbf394b5fdc2a4a61405bceb987c6b1e4f4b6e2ee56c6f9e",
+            "e260cd620dacae93083601390766659bd8f9d18001c1b1f0db128f7a381362e5"
+          ]
+        }
+      },
+      {
+        "seq": 6,
+        "time": "10:53:25.124",
+        "session": "run2",
+        "direction": "sent",
+        "peer": "both clients",
+        "message": "INTERSECTION",
+        "payload": {
+          "count": 2,
+          "digests": [
+            "e260cd620dacae93083601390766659bd8f9d18001c1b1f0db128f7a381362e5",
+            "ecf2de5604e9c6182e7216c895ec99794da0a8100ee978ef94492316155c67b0"
+          ]
+        }
+      }
+    ]
+  },
+  "run3_hmac": {
+    "clients": {
+      "client2": {
+        "client_id": "client2",
+        "mode": "hmac",
+        "input_set": [
+          5,
+          8,
+          11,
+          240000000
+        ],
+        "digests_sent": [
+          "2ca27b56f7de1f0d1fde73d5bb003f3bec0ef683b26fd37d0b6364a6dc44eb65",
+          "383b2aeff348a3fe956cb60aa06c455aa52f6dfef6868ff57ccc1c5b540266e6",
+          "e255673307a8ea7aded0930cc43713a63f1356367631508242309443416acc52",
+          "e2c4f005d53ca38798e551f1f3eede2968953c0040838631f15ee6fd5b52e45b"
+        ],
+        "lookup_table": {
+          "e2c4f005d53ca38798e551f1f3eede2968953c0040838631f15ee6fd5b52e45b": "5",
+          "e255673307a8ea7aded0930cc43713a63f1356367631508242309443416acc52": "8",
+          "383b2aeff348a3fe956cb60aa06c455aa52f6dfef6868ff57ccc1c5b540266e6": "11",
+          "2ca27b56f7de1f0d1fde73d5bb003f3bec0ef683b26fd37d0b6364a6dc44eb65": "240000000"
+        },
+        "intersection_digests": [
+          "2ca27b56f7de1f0d1fde73d5bb003f3bec0ef683b26fd37d0b6364a6dc44eb65",
+          "e2c4f005d53ca38798e551f1f3eede2968953c0040838631f15ee6fd5b52e45b"
+        ],
+        "intersection": [
+          5,
+          240000000
+        ]
+      },
+      "client1": {
+        "client_id": "client1",
+        "mode": "hmac",
+        "input_set": [
+          1,
+          2,
+          5,
+          9,
+          240000000
+        ],
+        "digests_sent": [
+          "2ca27b56f7de1f0d1fde73d5bb003f3bec0ef683b26fd37d0b6364a6dc44eb65",
+          "035c9c105adbfb0339e57832c97730fa28257bca83790fe0d9944a4dc02c4957",
+          "9beb6ba11fdbdc01b7d6096b03e5d86eff12b43c1040317d3825f818ba24c0d6",
+          "6c9039fd9772a9bb41aa4c5bbd67a822cf36792b7ee47e38b423dbd91e616391",
+          "e2c4f005d53ca38798e551f1f3eede2968953c0040838631f15ee6fd5b52e45b"
+        ],
+        "lookup_table": {
+          "6c9039fd9772a9bb41aa4c5bbd67a822cf36792b7ee47e38b423dbd91e616391": "1",
+          "9beb6ba11fdbdc01b7d6096b03e5d86eff12b43c1040317d3825f818ba24c0d6": "2",
+          "e2c4f005d53ca38798e551f1f3eede2968953c0040838631f15ee6fd5b52e45b": "5",
+          "035c9c105adbfb0339e57832c97730fa28257bca83790fe0d9944a4dc02c4957": "9",
+          "2ca27b56f7de1f0d1fde73d5bb003f3bec0ef683b26fd37d0b6364a6dc44eb65": "240000000"
+        },
+        "intersection_digests": [
+          "2ca27b56f7de1f0d1fde73d5bb003f3bec0ef683b26fd37d0b6364a6dc44eb65",
+          "e2c4f005d53ca38798e551f1f3eede2968953c0040838631f15ee6fd5b52e45b"
+        ],
+        "intersection": [
+          5,
+          240000000
+        ]
+      }
+    },
+    "server_log": [
+      {
+        "seq": 7,
+        "time": "10:53:25.135",
+        "session": "run3",
+        "direction": "received",
+        "peer": "client2",
+        "message": "DH_PUBLIC_KEY",
+        "payload": {
+          "public_key_truncated": "24769976356531587206507196445196..."
+        }
+      },
+      {
+        "seq": 8,
+        "time": "10:53:25.136",
+        "session": "run3",
+        "direction": "received",
+        "peer": "client1",
+        "message": "DH_PUBLIC_KEY",
+        "payload": {
+          "public_key_truncated": "28838094802383950368861564894579..."
+        }
+      },
+      {
+        "seq": 9,
+        "time": "10:53:25.137",
+        "session": "run3",
+        "direction": "sent",
+        "peer": "client2",
+        "message": "DH_PEER_KEY",
+        "payload": {
+          "peer": "client1",
+          "public_key_truncated": "28838094802383950368861564894579..."
+        }
+      },
+      {
+        "seq": 10,
+        "time": "10:53:25.137",
+        "session": "run3",
+        "direction": "sent",
+        "peer": "client1",
+        "message": "DH_PEER_KEY",
+        "payload": {
+          "peer": "client2",
+          "public_key_truncated": "24769976356531587206507196445196..."
+        }
+      },
+      {
+        "seq": 11,
+        "time": "10:53:25.148",
+        "session": "run3",
+        "direction": "received",
+        "peer": "client2",
+        "message": "BLINDED_SET",
+        "payload": {
+          "mode": "hmac",
+          "count": 4,
+          "digests": [
+            "2ca27b56f7de1f0d1fde73d5bb003f3bec0ef683b26fd37d0b6364a6dc44eb65",
+            "383b2aeff348a3fe956cb60aa06c455aa52f6dfef6868ff57ccc1c5b540266e6",
+            "e255673307a8ea7aded0930cc43713a63f1356367631508242309443416acc52",
+            "e2c4f005d53ca38798e551f1f3eede2968953c0040838631f15ee6fd5b52e45b"
+          ]
+        }
+      },
+      {
+        "seq": 12,
+        "time": "10:53:25.148",
+        "session": "run3",
+        "direction": "received",
+        "peer": "client1",
+        "message": "BLINDED_SET",
+        "payload": {
+          "mode": "hmac",
+          "count": 5,
+          "digests": [
+            "2ca27b56f7de1f0d1fde73d5bb003f3bec0ef683b26fd37d0b6364a6dc44eb65",
+            "035c9c105adbfb0339e57832c97730fa28257bca83790fe0d9944a4dc02c4957",
+            "9beb6ba11fdbdc01b7d6096b03e5d86eff12b43c1040317d3825f818ba24c0d6",
+            "6c9039fd9772a9bb41aa4c5bbd67a822cf36792b7ee47e38b423dbd91e616391",
+            "e2c4f005d53ca38798e551f1f3eede2968953c0040838631f15ee6fd5b52e45b"
+          ]
+        }
+      },
+      {
+        "seq": 13,
+        "time": "10:53:25.149",
+        "session": "run3",
+        "direction": "sent",
+        "peer": "both clients",
+        "message": "INTERSECTION",
+        "payload": {
+          "count": 2,
+          "digests": [
+            "2ca27b56f7de1f0d1fde73d5bb003f3bec0ef683b26fd37d0b6364a6dc44eb65",
+            "e2c4f005d53ca38798e551f1f3eede2968953c0040838631f15ee6fd5b52e45b"
+          ]
+        }
+      }
+    ]
+  }
+}

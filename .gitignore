@@ -1,0 +1,14 @@
+# Node / Hardhat
+node_modules/
+.hardhat-cache/
+.hardhat-artifacts/
+
+# Python
+__pycache__/
+*.pyc
+
+# Local server noise (the committed results/ files are the real outputs)
+results/server_stdout.log
+
+# OS
+.DS_Store
