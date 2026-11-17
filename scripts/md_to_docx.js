@@ -48,7 +48,7 @@ function inlineRuns(text, base = {}) {
     } else if (token.startsWith("`")) {
       runs.push(new TextRun({
         text: token.slice(1, -1), font: MONO_FONT,
-        size: (base.size || 22) - 2, ...base, color: "444444",
+        size: (base.size || 22) - 2, ...base,
       }));
     } else {
       runs.push(new TextRun({ text: token.slice(1, -1), italics: true, ...base }));
@@ -82,7 +82,7 @@ function quoteParagraph(text) {
     children: inlineRuns(text, { italics: true, size: 20 }),
     indent: { left: 360 },
     spacing: { before: 120, after: 120 },
-    border: { left: { style: BorderStyle.SINGLE, size: 12, color: "C00000", space: 8 } },
+    border: { left: { style: BorderStyle.SINGLE, size: 12, color: "808080", space: 8 } },
   });
 }
 
@@ -258,7 +258,7 @@ function main() {
   const blocks = parse(fs.readFileSync(SOURCE, "utf8"));
 
   const headingStyle = (size) => ({
-    run: { font: BODY_FONT, size, bold: true, color: "1F3864" },
+    run: { font: BODY_FONT, size, bold: true, color: "000000" },
     paragraph: { spacing: { before: 280, after: 140 }, keepNext: true },
   });
 
@@ -269,7 +269,7 @@ function main() {
       default: {
         document: { run: { font: BODY_FONT, size: 22 } },
         title: {
-          run: { font: BODY_FONT, size: 36, bold: true, color: "1F3864" },
+          run: { font: BODY_FONT, size: 36, bold: true, color: "000000" },
           paragraph: { spacing: { before: 0, after: 240 }, keepNext: true },
         },
         heading1: headingStyle(30),
