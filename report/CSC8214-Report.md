@@ -1,8 +1,10 @@
 # CSC8214 System Security — Assignment and Report
 
-**Student number (ID):** `240000000`  ← *replace with your own student number and re-run
-`python3 psi/run_experiments.py --student-id <your number>`; every digest below that involves
-ID will change, and the report text tells you which ones those are.*
+**Student number (ID):** `260452597`
+
+All outputs quoted in this report were produced by
+`python3 psi/run_experiments.py --student-id 260452597`
+and are reproduced verbatim from `results/transcript.txt`.
 
 **Submitted files**
 
@@ -133,34 +135,37 @@ the privacy analysis in A.5 evidence-based rather than assumed.
 
 ### (i) Run 1 — the given sets
 
-Client 1 = `{1, 2, 5, 9, ID}`, Client 2 = `{5, 8, 11, ID}`, `ID = 240000000`.
+Client 1 = `{1, 2, 5, 9, ID}`, Client 2 = `{5, 8, 11, ID}`, `ID = 260452597`.
 
 **Messages received by the Server** (session `run1`, copied from `results/transcript.txt`):
 
 ```
-[ 1] Server <-- client1   BLINDED_SET   mode=plain  count=5
-       ecf2de5604e9c6182e7216c895ec99794da0a8100ee978ef94492316155c67b0
-       443d7581c97e9580bbf394b5fdc2a4a61405bceb987c6b1e4f4b6e2ee56c6f9e
-       96dcfae20d4e26466b1f7dace43d95372c97aeea149dfa30d7c16f0d2261b9ee
-       e260cd620dacae93083601390766659bd8f9d18001c1b1f0db128f7a381362e5
-       99e2d08e26e0cf553853271a4d51fa24a533cc7cc262cdbdce98dd64901dddab
-[ 2] Server <-- client2   BLINDED_SET   mode=plain  count=4
-       e260cd620dacae93083601390766659bd8f9d18001c1b1f0db128f7a381362e5
+[ 1] Server <-- client2   BLINDED_SET   mode=plain  count=4
+       7171a8e2f17b8501a55f4f943f528666e8137ba9515d910b4dc559d38af1135e
        443d7581c97e9580bbf394b5fdc2a4a61405bceb987c6b1e4f4b6e2ee56c6f9e
        d78bd3d40637d1b405728f69a29ca85976e5e7824f1033e8c46967fe01d4767f
        ce21b7c354366862da6409a2087b7694374c3587843cfa0bd74e156213b05d41
+[ 2] Server <-- client1   BLINDED_SET   mode=plain  count=5
+       443d7581c97e9580bbf394b5fdc2a4a61405bceb987c6b1e4f4b6e2ee56c6f9e
+       96dcfae20d4e26466b1f7dace43d95372c97aeea149dfa30d7c16f0d2261b9ee
+       7171a8e2f17b8501a55f4f943f528666e8137ba9515d910b4dc559d38af1135e
+       99e2d08e26e0cf553853271a4d51fa24a533cc7cc262cdbdce98dd64901dddab
+       ecf2de5604e9c6182e7216c895ec99794da0a8100ee978ef94492316155c67b0
 [ 3] Server --> both clients   INTERSECTION   count=2
        443d7581c97e9580bbf394b5fdc2a4a61405bceb987c6b1e4f4b6e2ee56c6f9e
-       e260cd620dacae93083601390766659bd8f9d18001c1b1f0db128f7a381362e5
+       7171a8e2f17b8501a55f4f943f528666e8137ba9515d910b4dc559d38af1135e
 ```
 
-No raw set element appears anywhere in the Server's view.
+No raw set element appears anywhere in the Server's view. The two clients run
+concurrently and each shuffles its digests before sending them (Step 2 of A.3), so both the
+order of the two messages and the order of the digests within them differ from run to run.
+The digests themselves, and the Server's answer, do not.
 
 **Clients' outputs**
 
 ```
-[client1] INTERSECTION = [5, 240000000]
-[client2] INTERSECTION = [5, 240000000]
+[client2] INTERSECTION = [5, 260452597]
+[client1] INTERSECTION = [5, 260452597]
 ```
 
 Both clients independently inverted the two returned digests through their own tables and
@@ -172,15 +177,15 @@ Client 2's set was changed from `{5, 8, 11, ID}` to `{2, 8, 11, ID}`: the shared
 was removed and `2`, which Client 1 holds, was added. Client 1's set was left unchanged.
 
 ```
-[client1] INTERSECTION = [2, 240000000]
-[client2] INTERSECTION = [2, 240000000]
+[client1] INTERSECTION = [2, 260452597]
+[client2] INTERSECTION = [2, 260452597]
 ```
 
 **Explanation.** The output changed from `{5, ID}` to `{2, ID}`, exactly as the sets dictate.
 `5` disappeared because Client 2 no longer holds it, so its digest
 `443d7581…` is now in `D₁` only and fails the Server's set intersection. `2` appeared because
 both clients now hold it, so both produced the identical digest `ecf2de56…` and it survived the
-intersection. `ID` is still common to both sets, so `e260cd62…` is returned again — and it is
+intersection. `ID` is still common to both sets, so `7171a8e2…` is returned again — and it is
 *the same digest string as in Run 1*, which is the determinism the protocol relies on and also,
 as A.5 shows, a weakness. The digest of an element depends only on the element, not on who sent
 it or when, which is why equality can be tested at all.
@@ -195,7 +200,7 @@ Even though no element is sent in the clear, the Server's view is not empty. Fro
 it directly learns: the **cardinality** of each client's set (5 and 4); the **size of the
 intersection** (2); and, because digests are deterministic and unkeyed, **which digests the two
 clients have in common** and which are unique to one of them. Across sessions it learns more:
-digest `e260cd62…` appears in Run 1, Run 2 and in both clients' sets, so the Server can **link**
+digest `7171a8e2…` appears in Run 1, Run 2 and in both clients' sets, so the Server can **link**
 the same element across runs and across clients without knowing what it is. If it ran the
 protocol with many clients it could build a profile of who shares which (still unidentified)
 elements — a social graph by correlation.
@@ -212,18 +217,21 @@ legitimately received. Measured output (`results/transcript.txt`):
 
 ```
 Phase 1: hash every integer in [0, 10000) and compare.
-         10,000 candidates hashed in 0.01s (1,421,700 hashes/second, single-threaded Python)
+         10,000 candidates hashed in 0.01s (1,415,495 hashes/second, single-threaded Python)
 client1: recovered 4/5 elements
     96dcfae20d4e26466b1f7dac...  ->  1
     ecf2de5604e9c6182e7216c8...  ->  2
     443d7581c97e9580bbf394b5...  ->  5
     99e2d08e26e0cf553853271a...  ->  9
+    7171a8e2f17b8501a55f4f94...  ->  NOT FOUND in this range
 client2: recovered 3/4 elements
     443d7581c97e9580bbf394b5...  ->  5
     ce21b7c354366862da6409a2...  ->  8
     d78bd3d40637d1b405728f69...  ->  11
-Phase 2: searching 240,000,000..240,099,999
-    e260cd620dacae9308360139...  ->  240000000   <-- STUDENT NUMBER RECOVERED
+    7171a8e2f17b8501a55f4f94...  ->  NOT FOUND in this range
+Phase 2: Searching 260400000..260499999 (100,000 candidates).
+         52,598 candidates hashed in 0.06s
+    7171a8e2f17b8501a55f4f94...  ->  260452597   <-- STUDENT NUMBER RECOVERED
 RESULT: 7/7 distinct digests inverted.
 ```
 
@@ -385,18 +393,21 @@ follows.
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
+/// @title Crowdfunding campaign with a fixed beneficiary and funding target.
+/// @notice Accepts contributions and releases the balance to the beneficiary
+///         once, and only once the target has been reached.
 contract Crowdfunding {
-    // REQUIREMENT 2: beneficiary and target, fixed at deployment.
-    // `immutable` means not even the deployer can rewrite them later.
+    /// @dev Immutable, so the payout address cannot be changed after deployment.
     address payable public immutable beneficiary;
     uint256 public immutable target;
 
-    // Tracked explicitly, NOT read from address(this).balance, so that a
-    // selfdestruct cannot push the campaign over its target artificially.
+    /// @dev Tracked separately from address(this).balance, which selfdestruct
+    ///      can inflate without a genuine contribution.
     uint256 public totalRaised;
+
     mapping(address => uint256) public contributions;
 
-    // REQUIREMENT 4: the one-shot latch that makes withdrawal non-repeatable.
+    /// @dev One-shot latch: the defence against a second withdrawal.
     bool public withdrawn;
 
     event ContributionReceived(address indexed contributor, uint256 amount, uint256 totalRaised);
@@ -409,6 +420,11 @@ contract Crowdfunding {
     error AlreadyWithdrawn();
     error TransferFailed();
 
+    modifier onlyBeneficiary() {
+        if (msg.sender != beneficiary) revert NotBeneficiary(msg.sender);
+        _;
+    }
+
     constructor(address payable _beneficiary, uint256 _target) {
         require(_beneficiary != address(0), "beneficiary must not be the zero address");
         require(_target > 0, "target must be greater than zero");
@@ -416,41 +432,54 @@ contract Crowdfunding {
         target = _target;
     }
 
-    // msg.sender is set by the EVM and cannot be spoofed by the caller.
-    modifier onlyBeneficiary() {
-        if (msg.sender != beneficiary) revert NotBeneficiary(msg.sender);
-        _;
-    }
-
-    // REQUIREMENT 1: accept contributions.
+    /// @notice Contribute to the campaign.
+    /// @dev Accepted after the target is reached too, so that a late
+    ///      contributor does not lose gas to a revert.
     function contribute() public payable {
         if (msg.value == 0) revert ZeroContribution();
+
         bool wasBelowTarget = totalRaised < target;
-        contributions[msg.sender] += msg.value;   // 0.8+ reverts on overflow
+        contributions[msg.sender] += msg.value;
         totalRaised += msg.value;
+
         emit ContributionReceived(msg.sender, msg.value, totalRaised);
         if (wasBelowTarget && totalRaised >= target) emit TargetReached(totalRaised);
     }
 
-    // Plain transfers count as contributions, so funds are never trapped.
-    receive() external payable { contribute(); }
+    /// @notice Treat a plain transfer as a contribution rather than trapping it.
+    receive() external payable {
+        contribute();
+    }
 
-    // REQUIREMENTS 3 and 4, in checks-effects-interactions order.
+    /// @notice Release the balance to the beneficiary.
+    /// @dev Checks-effects-interactions: `withdrawn` is set before the external
+    ///      call, so a re-entrant call reverts with AlreadyWithdrawn.
     function withdraw() external onlyBeneficiary {
-        if (totalRaised < target) revert TargetNotReached(totalRaised, target); // CHECK
-        if (withdrawn) revert AlreadyWithdrawn();                               // CHECK
-        withdrawn = true;                                                       // EFFECT
+        if (totalRaised < target) revert TargetNotReached(totalRaised, target);
+        if (withdrawn) revert AlreadyWithdrawn();
+
+        withdrawn = true;
         uint256 amount = address(this).balance;
-        (bool ok, ) = beneficiary.call{value: amount}("");                      // INTERACTION
+
+        // `call` rather than transfer(), whose 2300 gas stipend breaks
+        // contract beneficiaries. Safe here because the latch is already set.
+        (bool ok, ) = beneficiary.call{value: amount}("");
         if (!ok) revert TransferFailed();
+
         emit FundsWithdrawn(beneficiary, amount);
     }
 
-    function targetReached() external view returns (bool) { return totalRaised >= target; }
+    function targetReached() external view returns (bool) {
+        return totalRaised >= target;
+    }
+
     function remaining() external view returns (uint256) {
         return totalRaised >= target ? 0 : target - totalRaised;
     }
-    function balance() external view returns (uint256) { return address(this).balance; }
+
+    function balance() external view returns (uint256) {
+        return address(this).balance;
+    }
 }
 ```
 

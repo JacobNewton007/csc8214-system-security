@@ -1,18 +1,13 @@
-"""
-CSC8214 System Security - Assignment Question A.4 (implementation and testing).
+"""Question A.4: runs the whole of Part A and writes the outputs to results/.
 
-Orchestrates the whole of Part A:
+    RUN 1   the sets given in the question
+    RUN 2   Client 2's set modified so the intersection changes
+    RUN 3   the sets of Run 1 with the keyed blinding of A.5
+    ATTACK  the Server brute-forcing the Run 1 and Run 3 digests
 
-  RUN 1  the sets given in the question:  C1 = {1,2,5,9,ID}   C2 = {5,8,11,ID}
-  RUN 2  Client 2's set modified so the intersection changes (A.4 ii)
-  RUN 3  the same sets as Run 1 but with the A.5 privacy improvement (HMAC)
-  ATTACK the Server brute-forces the Run 1 digests, then the Run 3 digests
+Starts the Server itself unless one is already listening.
 
-It starts the Server automatically if one is not already listening, runs the
-two clients concurrently in threads, prints everything each party sees, and
-writes machine-readable copies into results/.
-
-Run with:   python3 psi/run_experiments.py --student-id 240123456
+    python3 psi/run_experiments.py --student-id 260452597
 """
 
 from __future__ import annotations
@@ -27,211 +22,204 @@ import time
 import urllib.error
 import urllib.request
 from pathlib import Path
+from typing import Any
 
-from client import run_client
+from client import Element, run_client
 
 HERE = Path(__file__).resolve().parent
-ROOT = HERE.parent
-RESULTS = ROOT / "results"
-DEFAULT_SERVER = "http://127.0.0.1:8214"
+RESULTS = HERE.parent / "results"
+DEFAULT_PORT = 8214
+STARTUP_ATTEMPTS = 50
+STARTUP_DELAY_SECONDS = 0.1
 
 
 class Tee:
-    """Write everything printed to both the terminal and a transcript file."""
+    """Mirror stdout into a transcript file."""
 
-    def __init__(self, stream, path: Path):
+    def __init__(self, stream: Any, path: Path) -> None:
         self.stream = stream
         self.file = path.open("w", encoding="utf-8")
 
-    def write(self, data):
+    def write(self, data: str) -> int:
         self.stream.write(data)
         self.file.write(data)
         return len(data)
 
-    def flush(self):
+    def flush(self) -> None:
         self.stream.flush()
         self.file.flush()
 
-    def close(self):
+    def close(self) -> None:
         self.file.close()
 
 
 def server_is_up(server: str) -> bool:
     try:
-        with urllib.request.urlopen(f"{server}/health", timeout=1) as resp:
-            return resp.status == 200
+        with urllib.request.urlopen(f"{server}/health", timeout=1) as response:
+            return response.status == 200
     except (urllib.error.URLError, OSError):
         return False
 
 
-def start_server(server: str, port: int) -> subprocess.Popen | None:
-    """Start the Server unless one is already listening."""
+def start_server(server: str, port: int) -> subprocess.Popen[str] | None:
     if server_is_up(server):
         print(f"[runner] a Server is already listening on {server}")
         return None
     print(f"[runner] starting the Server on port {port} ...")
-    proc = subprocess.Popen(
+    process = subprocess.Popen(
         [sys.executable, str(HERE / "server.py"), "--port", str(port)],
-        stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,
-    )
-    for _ in range(50):
+        stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    for _ in range(STARTUP_ATTEMPTS):
         if server_is_up(server):
             print(f"[runner] Server is up on {server}")
-            return proc
-        time.sleep(0.1)
-    proc.terminate()
+            return process
+        time.sleep(STARTUP_DELAY_SECONDS)
+    process.terminate()
     raise SystemExit("the Server failed to start")
 
 
-def post(server: str, path: str, payload: dict) -> dict:
-    data = json.dumps(payload).encode("utf-8")
-    req = urllib.request.Request(f"{server}{path}", data=data,
-                                 headers={"Content-Type": "application/json"},
-                                 method="POST")
-    with urllib.request.urlopen(req, timeout=10) as resp:
-        return json.loads(resp.read().decode("utf-8"))
+def post(server: str, path: str, payload: dict[str, Any]) -> dict[str, Any]:
+    request = urllib.request.Request(
+        f"{server}{path}", data=json.dumps(payload).encode(),
+        headers={"Content-Type": "application/json"}, method="POST")
+    with urllib.request.urlopen(request, timeout=10) as response:
+        return json.loads(response.read())
 
 
-def get(server: str, path: str) -> dict:
-    with urllib.request.urlopen(f"{server}{path}", timeout=10) as resp:
-        return json.loads(resp.read().decode("utf-8"))
+def get(server: str, path: str) -> dict[str, Any]:
+    with urllib.request.urlopen(f"{server}{path}", timeout=10) as response:
+        return json.loads(response.read())
 
 
 def banner(title: str) -> None:
-    print()
-    print("=" * 74)
-    print(title)
-    print("=" * 74)
+    print(f"\n{'=' * 74}\n{title}\n{'=' * 74}")
 
 
-def run_session(server: str, session: str, mode: str, set1: list, set2: list) -> dict:
-    """Run both clients concurrently against the Server."""
-    results: dict[str, dict] = {}
+def run_session(server: str, session: str, mode: str,
+                set1: list[Element], set2: list[Element]) -> dict[str, Any]:
+    """Run both clients concurrently, as two independent parties."""
+    results: dict[str, Any] = {}
     errors: list[BaseException] = []
 
-    def worker(client_id: str, elements: list) -> None:
+    def worker(client_id: str, elements: list[Element]) -> None:
         try:
             results[client_id] = run_client(client_id, elements, mode, session, server)
-        except BaseException as exc:  # noqa: BLE001 - surface it in the main thread
+        except BaseException as exc:  # re-raised in the main thread below
             errors.append(exc)
 
-    threads = [
-        threading.Thread(target=worker, args=("client1", set1)),
-        threading.Thread(target=worker, args=("client2", set2)),
-    ]
-    for t in threads:
-        t.start()
-    for t in threads:
-        t.join()
+    threads = [threading.Thread(target=worker, args=args)
+               for args in (("client1", set1), ("client2", set2))]
+    for thread in threads:
+        thread.start()
+    for thread in threads:
+        thread.join()
     if errors:
         raise errors[0]
     return results
 
 
-def print_server_view(server: str, session: str) -> list[dict]:
+def print_server_view(server: str, session: str) -> list[dict[str, Any]]:
     """Print exactly what the Server received and sent for one session."""
     log = [m for m in get(server, "/log")["messages"] if m["session"] == session]
-    print()
-    print(f"--- MESSAGES AT THE SERVER for session {session!r} "
-          f"(this is the Server's ENTIRE view) ---")
-    for msg in log:
-        arrow = "<--" if msg["direction"] == "received" else "-->"
-        print(f"  [{msg['seq']:>2}] {msg['time']}  Server {arrow} {msg['peer']:<12} "
-              f"{msg['message']}")
-        payload = msg["payload"]
-        if msg["message"] == "BLINDED_SET":
+    print(f"\n--- MESSAGES AT THE SERVER for session {session!r} "
+          "(this is the Server's ENTIRE view) ---")
+    for message in log:
+        arrow = "<--" if message["direction"] == "received" else "-->"
+        print(f"  [{message['seq']:>2}] {message['time']}  "
+              f"Server {arrow} {message['peer']:<12} {message['message']}")
+        payload = message["payload"]
+        if message["message"] == "BLINDED_SET":
             print(f"        mode={payload['mode']}  count={payload['count']}")
-            for d in payload["digests"]:
-                print(f"          {d}")
-        elif msg["message"] == "INTERSECTION":
+        elif message["message"] == "INTERSECTION":
             print(f"        count={payload['count']}")
-            for d in payload["digests"]:
-                print(f"          {d}")
         else:
             print(f"        {payload}")
+            continue
+        for element_digest in payload["digests"]:
+            print(f"          {element_digest}")
     print("  NOTE: no raw set element appears anywhere above.")
     return log
 
 
+def parse_student_id(raw: str) -> Element:
+    """Keep the ID numeric when it is, but tolerate a letter prefix."""
+    value = raw.strip()
+    return int(value) if value.lstrip("-").isdigit() else value
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="CSC8214 Part A experiment runner")
-    parser.add_argument("--student-id", default=os.environ.get("CSC8214_STUDENT_ID", "240000000"),
-                        help="your student number (the element called ID in the question)")
-    parser.add_argument("--port", type=int, default=8214)
+    parser.add_argument("--student-id",
+                        default=os.environ.get("CSC8214_STUDENT_ID", "260452597"))
+    parser.add_argument("--port", type=int, default=DEFAULT_PORT)
     parser.add_argument("--server", default=None)
     args = parser.parse_args()
 
     server = args.server or f"http://127.0.0.1:{args.port}"
-    student_id = int(args.student_id)
+    student_id = parse_student_id(args.student_id)
 
     RESULTS.mkdir(exist_ok=True)
     tee = Tee(sys.stdout, RESULTS / "transcript.txt")
     sys.stdout = tee
 
-    proc = None
+    process = None
     try:
-        proc = start_server(server, args.port)
+        process = start_server(server, args.port)
         post(server, "/reset", {})
 
-        set1 = [1, 2, 5, 9, student_id]
-        set2 = [5, 8, 11, student_id]
-        # A.4(ii): Client 2 drops 5 and adds 2, so the intersection must change
-        # from {5, ID} to {2, ID}.
-        set2_modified = [2, 8, 11, student_id]
+        set1: list[Element] = [1, 2, 5, 9, student_id]
+        set2: list[Element] = [5, 8, 11, student_id]
+        # A.4(ii): 5 removed and 2 added, so the intersection must change.
+        set2_modified: list[Element] = [2, 8, 11, student_id]
 
-        all_results: dict[str, dict] = {}
+        runs = [
+            ("run1", "plain", set1, set2,
+             "RUN 1 (A.4 i) - the sets given in the question, plain SHA-256",
+             [f"  Client 1 set: {{1, 2, 5, 9, ID}}  with ID = {student_id}",
+              f"  Client 2 set: {{5, 8, 11, ID}}    with ID = {student_id}",
+              f"  Expected intersection: {{5, {student_id}}}"]),
+            ("run2", "plain", set1, set2_modified,
+             "RUN 2 (A.4 ii) - Client 2's set modified, plain SHA-256",
+             ["  Client 1 set: {1, 2, 5, 9, ID}  (unchanged)",
+              "  Client 2 set: {2, 8, 11, ID}    (5 removed, 2 added)",
+              f"  Expected intersection: {{2, {student_id}}}"]),
+            ("run3", "hmac", set1, set2,
+             "RUN 3 (A.5 improvement) - same sets as Run 1, keyed HMAC-SHA256",
+             ["  The two clients first agree a key by Diffie-Hellman, relayed by",
+              "  the Server. The Server sees g^a and g^b but cannot derive g^ab."]),
+        ]
 
-        # ---------------- RUN 1 ---------------------------------------------
-        banner("RUN 1 (A.4 i) - the sets given in the question, plain SHA-256")
-        print(f"  Client 1 set: {{1, 2, 5, 9, ID}}  with ID = {student_id}")
-        print(f"  Client 2 set: {{5, 8, 11, ID}}    with ID = {student_id}")
-        print(f"  Expected intersection: {{5, {student_id}}}")
-        print()
-        r1 = run_session(server, "run1", "plain", set1, set2)
-        log1 = print_server_view(server, "run1")
-        all_results["run1"] = {"clients": r1, "server_log": log1}
+        all_results: dict[str, Any] = {}
+        for session, mode, first, second, title, preamble in runs:
+            banner(title)
+            print("\n".join(preamble))
+            print()
+            clients = run_session(server, session, mode, first, second)
+            key = "run3_hmac" if session == "run3" else session
+            all_results[key] = {"clients": clients,
+                                "server_log": print_server_view(server, session)}
 
-        # ---------------- RUN 2 ---------------------------------------------
-        banner("RUN 2 (A.4 ii) - Client 2's set modified, plain SHA-256")
-        print(f"  Client 1 set: {{1, 2, 5, 9, ID}}  (unchanged)")
-        print(f"  Client 2 set: {{2, 8, 11, ID}}    (5 removed, 2 added)")
-        print(f"  Expected intersection: {{2, {student_id}}}")
-        print()
-        r2 = run_session(server, "run2", "plain", set1, set2_modified)
-        log2 = print_server_view(server, "run2")
-        all_results["run2"] = {"clients": r2, "server_log": log2}
-
-        # ---------------- RUN 3 ---------------------------------------------
-        banner("RUN 3 (A.5 improvement) - same sets as Run 1, keyed HMAC-SHA256")
-        print("  The two clients first agree a key by Diffie-Hellman, relayed by")
-        print("  the Server. The Server sees g^a and g^b but cannot derive g^ab.")
-        print()
-        r3 = run_session(server, "run3", "hmac", set1, set2)
-        log3 = print_server_view(server, "run3")
-        all_results["run3_hmac"] = {"clients": r3, "server_log": log3}
-
-        # ---------------- ATTACKS -------------------------------------------
-        id_hint = student_id // 100_000  # the Server is assumed to know the prefix
+        # The Server is assumed to know all but the last five characters of a
+        # student number, which is not a secret in the first place.
+        id_prefix = str(student_id)[:-5]
         for session in ("run1", "run3"):
             print()
             attack = subprocess.run(
                 [sys.executable, str(HERE / "attack_bruteforce.py"),
                  "--server", server, "--session", session,
-                 "--id-hint", str(id_hint), "--id-width", "5"],
-                capture_output=True, text=True, cwd=str(HERE),
-            )
+                 "--id-prefix", id_prefix, "--id-width", "5"],
+                capture_output=True, text=True, cwd=str(HERE), check=False)
             print(attack.stdout, end="")
             if attack.stderr:
                 print(attack.stderr, end="", file=sys.stderr)
 
-        # ---------------- SUMMARY -------------------------------------------
         banner("SUMMARY")
         for name, payload in all_results.items():
-            c1 = payload["clients"]["client1"]["intersection"]
-            c2 = payload["clients"]["client2"]["intersection"]
-            print(f"  {name:<10} client1 output = {c1}")
-            print(f"  {'':<10} client2 output = {c2}")
-            print(f"  {'':<10} both clients agree: {c1 == c2}")
+            first = payload["clients"]["client1"]["intersection"]
+            second = payload["clients"]["client2"]["intersection"]
+            print(f"  {name:<10} client1 output = {first}")
+            print(f"  {'':<10} client2 output = {second}")
+            print(f"  {'':<10} both clients agree: {first == second}")
 
         (RESULTS / "results.json").write_text(
             json.dumps(all_results, indent=2, default=str), encoding="utf-8")
@@ -243,12 +231,12 @@ def main() -> None:
     finally:
         sys.stdout = tee.stream
         tee.close()
-        if proc is not None:
-            proc.terminate()
+        if process is not None:
+            process.terminate()
             try:
-                proc.wait(timeout=5)
+                process.wait(timeout=5)
             except subprocess.TimeoutExpired:
-                proc.kill()
+                process.kill()
             print("[runner] Server stopped")
 
 

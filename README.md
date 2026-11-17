@@ -7,7 +7,7 @@ The report to submit is **[report/CSC8214-Report.md](report/CSC8214-Report.md)**
 Put your own student number in. Every output that contains `ID` depends on it.
 
 ```bash
-python3 psi/run_experiments.py --student-id 240123456
+python3 psi/run_experiments.py --student-id 260452597
 ```
 
 Then update the student number at the top of the report and the digests quoted in
@@ -28,7 +28,7 @@ Everything is standard-library Python 3 — no `pip install` needed.
 ### Run everything at once (starts the Server for you)
 
 ```bash
-python3 psi/run_experiments.py --student-id 240123456
+python3 psi/run_experiments.py --student-id 260452597
 ```
 
 Writes `results/transcript.txt`, `results/results.json` and `results/server_log_full.json`.
@@ -44,18 +44,18 @@ python3 psi/server.py --port 8214
 Then, in two more terminals:
 
 ```bash
-python3 psi/client.py --client-id client1 --set 1,2,5,9,240123456 --session run1
+python3 psi/client.py --client-id client1 --set 1,2,5,9,260452597 --session run1
 ```
 
 ```bash
-python3 psi/client.py --client-id client2 --set 5,8,11,240123456 --session run1
+python3 psi/client.py --client-id client2 --set 5,8,11,260452597 --session run1
 ```
 
 Add `--mode hmac` to both clients for the A.5 improvement. Then run the attack against what
 the Server collected:
 
 ```bash
-python3 psi/attack_bruteforce.py --session run1 --id-hint 2401 --id-width 5
+python3 psi/attack_bruteforce.py --session run1 --id-prefix 2604 --id-width 5
 ```
 
 ## Part B — Crowdfunding smart contract

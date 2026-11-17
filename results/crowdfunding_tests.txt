@@ -1,3 +1,7 @@
+
+> csc8214-system-security@1.0.0 test
+> hardhat run scripts/test_crowdfunding.js
+
 ==========================================================================
 B.4  CROWDFUNDING CONTRACT - FUNCTIONAL TESTS
 ==========================================================================
